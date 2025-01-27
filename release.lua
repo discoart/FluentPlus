@@ -26,13 +26,8 @@ local UserInputService = game:GetService("UserInputService")
 local Mobile = false
 
 if RunService:IsStudio() then
-	if UserInputService.TouchEnabled and not UserInputService.KeyboardEnabled and not UserInputService.MouseEnabled then
-		Mobile = true
-	else
-		Mobile = false
-	end
+	Mobile = false
 else
-
 	Mobile = table.find({Enum.Platform.IOS, Enum.Platform.Android}, UserInputService:GetPlatform()) ~= nil
 end
 
