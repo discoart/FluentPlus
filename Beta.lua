@@ -8,7 +8,7 @@ dsc.gg/hydrahub  |   29.01 - well well well removed last update, added "Bloody" 
 --- FLUENT PLUS SETTINGS ---
 local Show_Button = false -- Shows the button for toggle fluent ui manually. If "false", works only on mobile, if "true", works everytime.
 local Button_Icon = "" -- Icon of the button for toggle fluent ui
-local Show_Assets = true -- If "true", removes all assets from fluent for bypass fisch anti-cheat.
+local Show_Assets = true -- If "false", removes all assets from fluent for bypass fisch anti-cheat.
 ----------------------------
 
 local Lighting = game:GetService("Lighting")
@@ -35,7 +35,7 @@ if Show_Button then
 end
 
 local Asset = "rbxassetid://"
-if Show_Assets then
+if not Show_Assets then
 	Asset = ""
 end
 
