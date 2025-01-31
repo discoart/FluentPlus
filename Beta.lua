@@ -34,7 +34,7 @@ if Show_Button then
 end
 
 local Asset = "rbxassetid://"
-if Game.GameID == 5750914919 then
+if Game.GameId == 5750914919 then
 	Asset = ""
 end
 
