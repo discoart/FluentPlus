@@ -1773,10 +1773,10 @@ end
 
 local Components = {
 	Assets = {
-		Close = Asset.."9886659671",
-		Min = Asset.."9886659276",
-		Max = Asset.."9886659406",
-		Restore = Asset.."9886659001",
+		Close = "rbxassetid://9886659671",
+		Min = "rbxassetid://9886659276",
+		Max = "rbxassetid://9886659406",
+		Restore = "rbxassetid://9886659001",
 	},
 }
 
@@ -3469,7 +3469,7 @@ ElementsTable.Dropdown = (function()
 		})
 
 		local DropdownIco = New("ImageLabel", {
-			Image = Asset.."10709790948",
+			Image = "rbxassetid://10709790948",
 			Size = UDim2.fromOffset(16, 16),
 			AnchorPoint = Vector2.new(1, 0.5),
 			Position = UDim2.new(1, -8, 0.5, 0),
@@ -3512,9 +3512,9 @@ ElementsTable.Dropdown = (function()
 			Size = UDim2.new(1, -5, 1, -10),
 			Position = UDim2.fromOffset(5, 5),
 			BackgroundTransparency = 1,
-			BottomImage = Asset.."6889812791",
-			MidImage = Asset.."6889812721",
-			TopImage = Asset.."6276641225",
+			BottomImage = "rbxassetid://6889812791",
+			MidImage = "rbxassetid://6889812721",
+			TopImage = "rbxassetid://6276641225",
 			ScrollBarImageColor3 = Color3.fromRGB(255, 255, 255),
 			ScrollBarImageTransparency = 0.75,
 			ScrollBarThickness = 5,
