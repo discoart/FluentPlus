@@ -1,8 +1,8 @@
 --[[             |
 '                |   Last changes:     
-FluentPlus 1.2.2 |   06.03 - Fixed some themes and mobile button, added normal bypass to Fisch. 
-dsc.gg/hydrahub  |   31.01 - added Show_Assets toggle. Soon ill make normal bypass.
-'                |   29.01 - well well well removed last update, added "Bloody" theme and fluent-plus settings 😉
+FluentPlus 1.2.2 |   31.01 - added Show_Assets toggle. Soon ill make normal bypass.
+dsc.gg/hydrahub  |   29.01 - well well well removed last update, added "Bloody" theme and fluent-plus settings 😉
+'                |   01.01 - fixed this file and mobile support, added a "GUI dragging cooldown".
 ]]--             |
 
 --- FLUENT PLUS SETTINGS ---
@@ -3202,7 +3202,7 @@ Components.Window = (function()
 					})
 				else 
 					Library:Notify({
-						Title = "Interface (Mobile)",
+						Title = "Interface",
 						Content = "Tap to the button to toggle the interface.",
 						Duration = 6
 					})
@@ -4921,18 +4921,17 @@ ElementsTable.Input = (function()
 			Library:SafeCallback(Input.Changed, Input.Value)
 		end
 
-		if Input.Finished then
-			AddSignal(Box.FocusLost, function(enter)
-				if not enter then
-					return
-				end
-				Input:SetValue(Box.Text)
-			end)
-		else
-			AddSignal(Box:GetPropertyChangedSignal("Text"), function()
-				Input:SetValue(Box.Text)
-			end)
-		end
+if Input.Finished then
+    AddSignal(Box.FocusLost, function(enter)
+        if enter then
+            Input:SetValue(Box.Text)
+        end
+    end)
+else
+    AddSignal(Box.FocusLost, function()
+        Input:SetValue(Box.Text)
+    end)
+end
 
 		function Input:OnChanged(Func)
 			Input.Changed = Func
@@ -6252,16 +6251,6 @@ local InterfaceManager = {} do
 			end
 		})
 
-		section:AddSlider("CooldownDragging", {
-			Title = "GUI dragging cooldown.",
-			Default = 5,
-			Min = 0,
-			Max = 50,
-			Rounding = 1,
-			Callback = function(Value)
-				CDDrag = Value
-			end,
-		})
 
 		local MenuKeybind = section:AddKeybind("MenuKeybind", { Title = "Minimize Bind", Default = Library.MinimizeKey.Name or Settings.MenuKeybind })
 		MenuKeybind:OnChanged(function()
@@ -6379,7 +6368,7 @@ local Minimizer
 if Mobile then
 	Minimizer = New("Frame", {
 		Parent = GUI,
-		Size = UDim2.new(0.06, 0, 0.15, 0),
+		Size = UDim2.new(0.08, 1, 0.1642, 1),
 		Position = UDim2.new(0.45, 0, 0.025, 0),
 		BackgroundTransparency = 1,
 		ZIndex = 999999999,
