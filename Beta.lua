@@ -1,6 +1,6 @@
 --[[             |
 '                |   Last changes:     
-FluentPlus 1.2.2 |   06.03 - Fixed some themes and mobile button, added normal bypass to Fisch. 
+FluentPlus 1.2.2 |   06.03 - Fixed some themes and mobile button, added normal bypass to Fisch. (it isn't working)
 dsc.gg/hydrahub  |   31.01 - added Show_Assets toggle. Soon ill make normal bypass.
 '                |   29.01 - well well well removed last update, added "Bloody" theme and fluent-plus settings 😉
 ]]--    
@@ -305,7 +305,7 @@ local Themes = {
 		Dialog = Color3.fromRGB(27, 113, 130),
 		DialogHolder = Color3.fromRGB(33, 99, 109),
 		DialogHolderLine = Color3.fromRGB(34, 81, 86),
-		DialogButton = Color3.fromRGB(43, 72, 80),
+		DialogButton = Color3.fromRGB(27, 128, 130),
 		DialogButtonBorder = Color3.fromRGB(62, 100, 110),
 		DialogBorder = Color3.fromRGB(26, 86, 100),
 		DialogInput = Color3.fromRGB(36, 107, 105),
@@ -4920,7 +4920,7 @@ ElementsTable.Input = (function()
 			Library:SafeCallback(Input.Callback, Input.Value)
 			Library:SafeCallback(Input.Changed, Input.Value)
 		end
-		
+
 		if Input.Finished then
 			AddSignal(Box.FocusLost, function(enter)
 				if not enter then
@@ -6228,7 +6228,7 @@ local InterfaceManager = {} do
 
 		InterfaceTheme:SetValue(Settings.Theme)
 
-		if Library.UseAcrylic then
+		if Library.UseAcrylic and not Mobile then
 			section:AddToggle("AcrylicToggle", {
 				Title = "Acrylic",
 				Description = "The blurred background requires graphic quality 8+",
@@ -6239,6 +6239,8 @@ local InterfaceManager = {} do
 					InterfaceManager:SaveSettings()
 				end
 			})
+		elseif Mobile then
+			Settings.Acrylic = false
 		end
 
 		section:AddToggle("TransparentToggle", {
