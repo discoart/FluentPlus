@@ -6,8 +6,13 @@ dsc.gg/hydrahub  |   31.01 - added Show_Assets toggle. Soon ill make normal bypa
 ]]--    
 
 --- FLUENT PLUS SETTINGS ---
+
+--- MOBILE -----------------
 local Show_Button = false -- Shows the button for toggle fluent ui manually. If "false", works only on mobile, if "true", works everytime.
-local Button_Icon = "" -- Icon of the button for toggle fluent ui
+local Button_Icon = "" -- Icon of the button for toggle fluent ui.
+local Button_Transparency = 1 -- Transparency of button background (check line #6365).
+----------------------------
+
 ----------------------------
 
 local Lighting = game:GetService("Lighting")
@@ -6355,9 +6360,9 @@ local MinimizeButton = New("TextButton", {
 		PaddingTop = UDim.new(0, 2),
 	}),
 	New("ImageLabel", {
-		Image = Mobile and Button_Icon or "rbxassetid://10734897102" or "",
+		Image = Mobile and "rbxassetid://10734897102" or "",
 		Size = UDim2.new(1, 0, 1, 0),
-		BackgroundTransparency = 1,
+		BackgroundTransparency = Button_Transparency,
 	}, {
 		New("UIAspectRatioConstraint", {
 			AspectRatio = 1,
