@@ -2205,12 +2205,6 @@ Components.Tab = (function()
 			TabModule:SelectTab(TabIndex)
 		end)
 
-		Creator.AddSignal(Tab.Frame.InputBegan, function(Input)
-			if Input.UserInputType == Enum.UserInputType.Touch then
-				TabModule:SelectTab(TabIndex)
-			end
-		end)
-
 		TabModule.Containers[TabIndex] = Tab.ContainerFrame
 		TabModule.Tabs[TabIndex] = Tab
 
@@ -2964,12 +2958,12 @@ Components.TitleBar = (function()
 					Size = UDim2.fromScale(0, 1),
 					AutomaticSize = Enum.AutomaticSize.X,
 					BackgroundTransparency = 1,
-					LayoutOrder = 2,
+					LayoutOrder = 1,
 					ThemeTag = {
 						TextColor3 = "Text",
 					},
 				}),
-				New("TextLabel", {
+				Config.SubTitle and New("TextLabel", {
 					RichText = true,
 					Text = Config.SubTitle,
 					TextTransparency = 0.4,
@@ -2984,11 +2978,11 @@ Components.TitleBar = (function()
 					Size = UDim2.fromScale(0, 1),
 					AutomaticSize = Enum.AutomaticSize.X,
 					BackgroundTransparency = 1,
-					LayoutOrder = 3,
+					LayoutOrder = 2,
 					ThemeTag = {
 						TextColor3 = "Text",
 					},
-				}),
+				}) or nil,
 			}),
 			New("Frame", {
 				BackgroundTransparency = 0.5,
@@ -3468,8 +3462,16 @@ Components.Window = (function()
 					})
 				end
 			end
-			if not RunService:IsStudio() then
-				pcall(SwapIco)
+			if not RunService:IsStudio() and Mobile and Minimizer then
+				pcall(function()
+					local minimizeButton = Minimizer:FindFirstChild("Frame"):FindFirstChild("TextButton")
+					if minimizeButton then
+						local imageLabel = minimizeButton:FindFirstChild("ImageLabel")
+						if imageLabel then
+							imageLabel.Image = Window.Minimized and "rbxassetid://10734896384" or "rbxassetid://10734897102"
+						end
+					end
+				end)
 			end
 		end
 
@@ -3571,12 +3573,6 @@ ElementsTable.Button = (function()
 			Library:SafeCallback(Config.Callback)
 		end)
 
-		Creator.AddSignal(ButtonFrame.Frame.InputBegan, function(Input)
-			if Input.UserInputType == Enum.UserInputType.Touch then
-				Library:SafeCallback(Config.Callback)
-			end
-		end)
-
 		return ButtonFrame
 	end
 
@@ -3673,12 +3669,6 @@ ElementsTable.Toggle = (function()
 
 		Creator.AddSignal(ToggleFrame.Frame.MouseButton1Click, function()
 			Toggle:SetValue(not Toggle.Value)
-		end)
-
-		Creator.AddSignal(ToggleFrame.Frame.InputBegan, function(Input)
-			if Input.UserInputType == Enum.UserInputType.Touch then
-				Toggle:SetValue(not Toggle.Value)
-			end
 		end)
 
 		Toggle:SetValue(Toggle.Value)
@@ -6709,7 +6699,7 @@ local MinimizeButton = New("TextButton", {
 		PaddingTop = UDim.new(0, 2),
 	}),
 	New("ImageLabel", {
-		Image = Mobile and Button_Icon or "rbxassetid://10734897102" or "",
+		Image = Mobile and (Button_Icon ~= "" and Button_Icon or "rbxassetid://10734897102") or "rbxassetid://10734897102",
 		Size = UDim2.new(1, 0, 1, 0),
 		BackgroundTransparency = 1,
 	}, {
@@ -6784,22 +6774,7 @@ Creator.AddSignal(Minimizer.InputBegan, function(Input)
 	end
 end)
 
-Creator.AddSignal(MinimizeButton.InputBegan, function(Input)
-	if
-		Input.UserInputType == Enum.UserInputType.MouseButton1
-		or Input.UserInputType == Enum.UserInputType.Touch
-	then
-		Dragging = true
-		MousePos = Input.Position
-		StartPos = Minimizer.Position
 
-		Input.Changed:Connect(function()
-			if Input.UserInputState == Enum.UserInputState.End then
-				Dragging = false
-			end
-		end)
-	end
-end)
 
 Creator.AddSignal(MinimizeButton.InputChanged, function(Input)
 	if
@@ -6850,5 +6825,6 @@ AddSignal(MinimizeButton.MouseButton1Click, function()
 	Library.Window:Minimize()
 end)
 
-task.wait(0.1)
+task.wait(0.01)
+
 return Library, SaveManager, InterfaceManager, Mobile
