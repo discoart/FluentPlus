@@ -10,6 +10,10 @@ A modified and enhanced version of [Fluent](https://github.com/dawid-scripts/Flu
 - **🎯 Icon Support** - Icons for sections, and tabs using Lucide icon system
 - **🐛 Bug Fixes** - Various stability and performance improvements
 
+[![FluentPlus Demo](https://img.youtube.com/vi/BoN4PpBUJMQ/maxresdefault.jpg)](https://youtu.be/BoN4PpBUJMQ?si=Jk9F89PQn-x0Mw8J)
+
+*Click the image above to watch the demo video*
+
 ## 📦 Installation
 
 - Beta
@@ -18,9 +22,9 @@ local Fluent = loadstring(Game:HttpGet("https://raw.githubusercontent.com/discoa
 ```
 
 - Stable
-  ```lua
-  local Fluent = loadstring(Game:HttpGet("https://raw.githubusercontent.com/discoart/FluentPlus/refs/heads/main/release.lua"))()
-  ```
+```lua
+local Fluent = loadstring(Game:HttpGet("https://raw.githubusercontent.com/discoart/FluentPlus/refs/heads/main/release.lua"))()
+```
 
 ## 🚀 Quick Start
 
