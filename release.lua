@@ -1,15 +1,21 @@
----@diagnostic disable: lowercase-global, undefined-global, undefined-field
+--[[
 
+███████╗██╗░░░░░██╗░░░██╗███████╗███╗░░██╗████████╗  ██████╗░██╗░░░░░██╗░░░██╗░██████╗
+██╔════╝██║░░░░░██║░░░██║██╔════╝████╗░██║╚══██╔══╝  ██╔══██╗██║░░░░░██║░░░██║██╔════╝
+█████╗░░██║░░░░░██║░░░██║█████╗░░██╔██╗██║░░░██║░░░  ██████╔╝██║░░░░░██║░░░██║╚█████╗░
+██╔══╝░░██║░░░░░██║░░░██║██╔══╝░░██║╚████║░░░██║░░░  ██╔═══╝░██║░░░░░██║░░░██║░╚═══██╗
+██║░░░░░███████╗╚██████╔╝███████╗██║░╚███║░░░██║░░░  ██║░░░░░███████╗╚██████╔╝██████╔╝
+╚═╝░░░░░╚══════╝░╚═════╝░╚══════╝╚═╝░░╚══╝░░░╚═╝░░░  ╚═╝░░░░░╚══════╝░╚═════╝░╚═════╝░
 
+A modified version of Fluent
+github.com/discoart/FluentPlus | dsc.gg/hydrahub
 
---[[             |
-'                |   Last changes:     
-FluentPlus 1.2   |   01.01 - fixed this file and mobile support, added a "GUI dragging cooldown".
-dsc.gg/hydrahub  |   31.12 - fixed all themes, more info in discord.
-'                |   30.12 - added themes.
-]]--             |
+]]
 
-
+--- button
+local Show_Button = false
+local Button_Icon = ""
+---
 
 local Lighting = game:GetService("Lighting")
 local RunService = game:GetService("RunService")
@@ -23,12 +29,21 @@ local httpService = game:GetService("HttpService")
 local RunService = game:GetService("RunService")
 local UserInputService = game:GetService("UserInputService")
 
-local Mobile = false
-
+local Mobile
 if RunService:IsStudio() then
 	Mobile = false
 else
 	Mobile = table.find({Enum.Platform.IOS, Enum.Platform.Android}, UserInputService:GetPlatform()) ~= nil
+end
+
+if Show_Button then
+	Mobile = true
+end
+
+local fischbypass
+
+if game.GameId == 5750914919 then
+	fischbypass = true
 end
 
 local RenderStepped = RunService.RenderStepped
@@ -53,7 +68,9 @@ local Themes = {
 		"Emerald",
 		"Sapphire",
 		"Cloud",
-		"Grape"
+		"Grape",
+		"Bloody",
+		"Arctic"
 	},
 	Dark = {
 		Name = "Dark",
@@ -296,7 +313,7 @@ local Themes = {
 		Dialog = Color3.fromRGB(27, 113, 130),
 		DialogHolder = Color3.fromRGB(33, 99, 109),
 		DialogHolderLine = Color3.fromRGB(34, 81, 86),
-		DialogButton = Color3.fromRGB(43, 72, 80),
+		DialogButton = Color3.fromRGB(27, 128, 130),
 		DialogButtonBorder = Color3.fromRGB(62, 100, 110),
 		DialogBorder = Color3.fromRGB(26, 86, 100),
 		DialogInput = Color3.fromRGB(36, 107, 105),
@@ -388,7 +405,7 @@ local Themes = {
 		AcrylicMain = Color3.fromRGB(20, 20, 20),
 		AcrylicBorder = Color3.fromRGB(83, 83, 130),
 		AcrylicGradient = ColorSequence.new(Color3.fromRGB(1, 1, 39), Color3.fromRGB(6, 6, 54)),
-		AcrylicNoise = 0.92,
+		AcrylicNoise = 0.96,
 		TitleBarLine = Color3.fromRGB(77, 75, 126),
 		Tab = Color3.fromRGB(126, 127, 180),
 		Element = Color3.fromRGB(111, 108, 160),
@@ -574,15 +591,15 @@ local Themes = {
 	Sapphire = {
 		Name = "Sapphire",
 		Accent = Color3.fromRGB(0, 105, 255),
-		AcrylicMain = Color3.fromRGB(10, 15, 35),
+		AcrylicMain = Color3.fromRGB(24, 30, 85),
 		AcrylicBorder = Color3.fromRGB(25, 80, 150),
-		AcrylicGradient = ColorSequence.new(Color3.fromRGB(10, 25, 70), Color3.fromRGB(15, 30, 90)),
+		AcrylicGradient = ColorSequence.new(Color3.fromRGB(13, 33, 94), Color3.fromRGB(21, 44, 127)),
 		AcrylicNoise = 0.88,
 		TitleBarLine = Color3.fromRGB(50, 120, 200),
 		Tab = Color3.fromRGB(60, 140, 220),
-		Element = Color3.fromRGB(45, 130, 190),
-		ElementBorder = Color3.fromRGB(30, 90, 140),
-		InElementBorder = Color3.fromRGB(40, 100, 160),
+		Element = Color3.fromRGB(42, 98, 176),
+		ElementBorder = Color3.fromRGB(23, 66, 113),
+		InElementBorder = Color3.fromRGB(27, 65, 126),
 		ElementTransparency = 0.85,
 		ToggleSlider = Color3.fromRGB(50, 140, 210),
 		ToggleToggled = Color3.fromRGB(20, 50, 80),
@@ -605,7 +622,7 @@ local Themes = {
 		DialogInput = Color3.fromRGB(30, 90, 140),
 		DialogInputLine = Color3.fromRGB(55, 150, 230),
 		Text = Color3.fromRGB(240, 240, 240),
-		SubText = Color3.fromRGB(180, 180, 255),
+		SubText = Color3.fromRGB(170, 170, 170),
 		Hover = Color3.fromRGB(50, 140, 210),
 		HoverChange = 0.05
 	},
@@ -684,14 +701,91 @@ local Themes = {
 		Hover = Color3.fromRGB(40, 40, 40),
 		HoverChange = 0.04
 	},
+	Bloody = {
+		Name = "Bloody",
+		Accent = Color3.fromRGB(144, 0, 0),
+		AcrylicMain = Color3.fromRGB(61, 0, 0),
+		AcrylicBorder = Color3.fromRGB(86, 0, 0),
+		AcrylicGradient = ColorSequence.new(Color3.fromRGB(90, 0, 0), Color3.fromRGB(100, 0, 0)),
+		AcrylicNoise = 0.92,
+		TitleBarLine = Color3.fromRGB(126, 0, 0),
+		Tab = Color3.fromRGB(134, 0, 0),
+		Element = Color3.fromRGB(156, 0, 0),
+		ElementBorder = Color3.fromRGB(91, 0, 0),
+		InElementBorder = Color3.fromRGB(106, 0, 0),
+		ElementTransparency = 0.86,
+		ToggleSlider = Color3.fromRGB(130, 5, 5),
+		ToggleToggled = Color3.fromRGB(66, 0, 0),
+		SliderRail = Color3.fromRGB(150, 30, 30),
+		DropdownFrame = Color3.fromRGB(150, 30, 30),
+		DropdownHolder = Color3.fromRGB(79, 0, 0),
+		DropdownBorder = Color3.fromRGB(116, 0, 0),
+		DropdownOption = Color3.fromRGB(150, 30, 30),
+		Keybind = Color3.fromRGB(150, 30, 30),
+		Input = Color3.fromRGB(150, 30, 30),
+		InputFocused = Color3.fromRGB(40, 10, 10),
+		InputIndicator = Color3.fromRGB(113, 1, 1),
+		Dialog = Color3.fromRGB(85, 0, 1),
+		DialogHolder = Color3.fromRGB(77, 0, 8),
+		DialogHolderLine = Color3.fromRGB(88, 4, 4),
+		DialogButton = Color3.fromRGB(115, 14, 21),
+		DialogButtonBorder = Color3.fromRGB(83, 0, 1),
+		DialogBorder = Color3.fromRGB(43, 4, 5),
+		DialogInput = Color3.fromRGB(108, 20, 21),
+		DialogInputLine = Color3.fromRGB(91, 1, 1),
+		Text = Color3.fromRGB(240, 240, 240),
+		SubText = Color3.fromRGB(131, 131, 131),
+		Hover = Color3.fromRGB(181, 0, 0),
+		HoverChange = 0.04
+	},
+	Arctic = {
+		Name = "Arctic",
+		Accent = Color3.fromRGB(64, 224, 255),
+		AcrylicMain = Color3.fromRGB(10, 18, 25),
+		AcrylicBorder = Color3.fromRGB(35, 55, 70),
+		AcrylicGradient = ColorSequence.new(Color3.fromRGB(15, 25, 35), Color3.fromRGB(18, 30, 40)),
+		AcrylicNoise = 0.94,
+		TitleBarLine = Color3.fromRGB(45, 70, 90),
+		Tab = Color3.fromRGB(70, 110, 140),
+		Element = Color3.fromRGB(60, 95, 120),
+		ElementBorder = Color3.fromRGB(60, 95, 120),
+		InElementBorder = Color3.fromRGB(70, 110, 140),
+		ElementTransparency = 0.88,
+		ToggleSlider = Color3.fromRGB(90, 140, 180),
+		ToggleToggled = Color3.fromRGB(15, 25, 35),
+		SliderRail = Color3.fromRGB(90, 140, 180),
+		DropdownFrame = Color3.fromRGB(110, 170, 220),
+		DropdownHolder = Color3.fromRGB(30, 45, 60),
+		DropdownBorder = Color3.fromRGB(60, 95, 120),
+		DropdownOption = Color3.fromRGB(90, 140, 180),
+		Keybind = Color3.fromRGB(90, 140, 180),
+		Input = Color3.fromRGB(90, 140, 180),
+		InputFocused = Color3.fromRGB(10, 18, 25),
+		InputIndicator = Color3.fromRGB(130, 200, 255),
+		InputIndicatorFocus = Color3.fromRGB(64, 224, 255),
+		Dialog = Color3.fromRGB(30, 45, 60),
+		DialogHolder = Color3.fromRGB(18, 30, 40),
+		DialogHolderLine = Color3.fromRGB(15, 25, 35),
+		DialogButton = Color3.fromRGB(30, 45, 60),
+		DialogButtonBorder = Color3.fromRGB(45, 70, 90),
+		DialogBorder = Color3.fromRGB(40, 60, 80),
+		DialogInput = Color3.fromRGB(35, 55, 70),
+		DialogInputLine = Color3.fromRGB(110, 170, 220),
+		Text = Color3.fromRGB(240, 250, 255),
+		SubText = Color3.fromRGB(180, 200, 220),
+		Hover = Color3.fromRGB(90, 140, 180),
+		HoverChange = 0.04
+	}
+
 }
 
 local Library = {
-	Version = "1.2",
+	Version = "1.2.2",
 
 	OpenFrames = {},
 	Options = {},
 	Themes = Themes.Names,
+	Windows = {},
 
 	Window = nil,
 	WindowFrame = nil,
@@ -791,7 +885,7 @@ end
 
 function Linear:step(state, dt)
 	local position = state.value
-	local velocity = self._velocity -- Linear motion ignores the state's velocity
+	local velocity = self._velocity
 	local goal = self._targetValue
 
 	local dPos = dt * velocity
@@ -846,9 +940,7 @@ function Spring.new(targetValue, options)
 end
 
 function Spring:step(state, dt)
-	-- Copyright 2018 Parker Stebbins (parker@fractality.io)
-	-- github.com/Fraktality/Spring
-	-- Distributed under the MIT license
+
 
 	local d = self._dampingRatio
 	local f = self._frequency * 2 * math.pi
@@ -861,26 +953,16 @@ function Spring:step(state, dt)
 
 	local p1, v1
 
-	if d == 1 then -- Critically damped
+	if d == 1 then
 		p1 = (offset * (1 + f * dt) + v0 * dt) * decay + g
 		v1 = (v0 * (1 - f * dt) - offset * (f * f * dt)) * decay
-	elseif d < 1 then -- Underdamped
+	elseif d < 1 then
 		local c = math.sqrt(1 - d * d)
 
 		local i = math.cos(f * c * dt)
 		local j = math.sin(f * c * dt)
 
-		-- Damping ratios approaching 1 can cause division by small numbers.
-		-- To fix that, group terms around z=j/c and find an approximation for z.
-		-- Start with the definition of z:
-		--    z = sin(dt*f*c)/c
-		-- Substitute a=dt*f:
-		--    z = sin(a*c)/c
-		-- Take the Maclaurin expansion of z with respect to c:
-		--    z = a - (a^3*c^2)/6 + (a^5*c^4)/120 + O(c^6)
-		--    z в‰€ a - (a^3*c^2)/6 + (a^5*c^4)/120
-		-- Rewrite in Horner form:
-		--    z в‰€ a + ((a*a)*(c*c)*(c*c)/20 - c*c)*(a*a*a)/6
+
 
 		local z
 		if c > EPS then
@@ -890,12 +972,7 @@ function Spring:step(state, dt)
 			z = a + ((a * a) * (c * c) * (c * c) / 20 - c * c) * (a * a * a) / 6
 		end
 
-		-- Frequencies approaching 0 present a similar problem.
-		-- We want an approximation for y as f approaches 0, where:
-		--    y = sin(dt*f*c)/(f*c)
-		-- Substitute b=dt*c:
-		--    y = sin(b*c)/b
-		-- Now reapply the process from z.
+
 
 		local y
 		if f * c > EPS then
@@ -907,7 +984,7 @@ function Spring:step(state, dt)
 
 		p1 = (offset * (i + d * z) + v0 * y) * decay + g
 		v1 = (v0 * (i - z * d) - offset * (z * f)) * decay
-	else-- Overdamped
+	else
 		local c = math.sqrt(d * d - 1)
 
 		local r1 = -f * (d - c)
@@ -1101,7 +1178,7 @@ function GroupMotor:step(deltaTime)
 	for _, motor in pairs(self._motors) do
 		local complete = motor:step(deltaTime)
 		if not complete then
-			-- If any of the sub-motors are incomplete, the group motor will not be complete either
+
 			allMotorsComplete = false
 		end
 	end
@@ -1308,19 +1385,18 @@ end
 function Creator.New(Name, Properties, Children)
 	local Object = Instance.new(Name)
 
-	-- Default properties
 	for Name, Value in next, Creator.DefaultProperties[Name] or {} do
 		Object[Name] = Value
 	end
 
-	-- Properties
+
 	for Name, Value in next, Properties or {} do
 		if Name ~= "ThemeTag" then
 			Object[Name] = Value
 		end
 	end
 
-	-- Children
+
 	for _, Child in next, Children or {} do
 		Child.Parent = Object
 	end
@@ -1823,6 +1899,12 @@ Components.Element = (function()
 
 		function Element:SetTitle(Set)
 			Element.TitleLabel.Text = Set
+			if Library.Windows and #Library.Windows > 0 then
+				local currentWindow = Library.Windows[#Library.Windows]
+				if currentWindow and currentWindow.AllElements and currentWindow.AllElements[Element.Frame] then
+					currentWindow.AllElements[Element.Frame].title = Set
+				end
+			end
 		end
 
 		function Element:Visible(Bool)
@@ -1839,6 +1921,12 @@ Components.Element = (function()
 				Element.DescLabel.Visible = true
 			end
 			Element.DescLabel.Text = Set
+			if Library.Windows and #Library.Windows > 0 then
+				local currentWindow = Library.Windows[#Library.Windows]
+				if currentWindow and currentWindow.AllElements and currentWindow.AllElements[Element.Frame] then
+					currentWindow.AllElements[Element.Frame].description = Set
+				end
+			end
 		end
 
 		function Element:GetTitle()
@@ -1855,6 +1943,14 @@ Components.Element = (function()
 
 		Element:SetTitle(Title)
 		Element:SetDesc(Desc)
+
+
+		if Library.Windows and #Library.Windows > 0 then
+			local currentWindow = Library.Windows[#Library.Windows]
+			if currentWindow and currentWindow.RegisterElement then
+				currentWindow.RegisterElement(Element.Frame, Title, "Element", Desc)
+			end
+		end
 
 		if Hover then
 			local Themes = Library.Themes
@@ -1886,7 +1982,7 @@ end)()
 Components.Section = (function()
 	local New = Creator.New
 
-	return function(Title, Parent)
+	return function(Title, Parent, Icon)
 		local Section = {}
 
 		Section.Layout = New("UIListLayout", {
@@ -1901,12 +1997,26 @@ Components.Section = (function()
 			Section.Layout,
 		})
 
-		Section.Root = New("Frame", {
+		local SectionHeader = New("Frame", {
+			Size = UDim2.new(1, -16, 0, 18),
+			Position = UDim2.fromOffset(0, 2),
 			BackgroundTransparency = 1,
-			Size = UDim2.new(1, 0, 0, 26),
-			LayoutOrder = 7,
-			Parent = Parent,
 		}, {
+			New("UIListLayout", {
+				Padding = UDim.new(0, 5),
+				FillDirection = Enum.FillDirection.Horizontal,
+				SortOrder = Enum.SortOrder.LayoutOrder,
+				VerticalAlignment = Enum.VerticalAlignment.Center,
+			}),
+			Icon and New("ImageLabel", {
+				Image = Icon,
+				Size = UDim2.fromOffset(16, 16),
+				BackgroundTransparency = 1,
+				LayoutOrder = 1,
+				ThemeTag = {
+					ImageColor3 = "Text",
+				},
+			}) or nil,
 			New("TextLabel", {
 				RichText = true,
 				Text = Title,
@@ -1915,12 +2025,23 @@ Components.Section = (function()
 				TextSize = 18,
 				TextXAlignment = "Left",
 				TextYAlignment = "Center",
-				Size = UDim2.new(1, -16, 0, 18),
-				Position = UDim2.fromOffset(0, 2),
+				Size = UDim2.fromScale(0, 1),
+				AutomaticSize = Enum.AutomaticSize.X,
+				BackgroundTransparency = 1,
+				LayoutOrder = 2,
 				ThemeTag = {
 					TextColor3 = "Text",
 				},
 			}),
+		})
+
+		Section.Root = New("Frame", {
+			BackgroundTransparency = 1,
+			Size = UDim2.new(1, 0, 0, 26),
+			LayoutOrder = 7,
+			Parent = Parent,
+		}, {
+			SectionHeader,
 			Section.Container,
 		})
 
@@ -1928,6 +2049,15 @@ Components.Section = (function()
 			Section.Container.Size = UDim2.new(1, 0, 0, Section.Layout.AbsoluteContentSize.Y)
 			Section.Root.Size = UDim2.new(1, 0, 0, Section.Layout.AbsoluteContentSize.Y + 25)
 		end)
+
+
+		if Library.Windows and #Library.Windows > 0 then
+			local currentWindow = Library.Windows[#Library.Windows]
+			if currentWindow and currentWindow.RegisterElement then
+				currentWindow.RegisterElement(Section.Root, Title, "Section")
+			end
+		end
+
 		return Section
 	end
 end)()
@@ -1970,12 +2100,14 @@ Components.Tab = (function()
 			Type = "Tab",
 		}
 
-		if Library:GetIcon(Icon) then
-			Icon = Library:GetIcon(Icon)
-		end
+		if not fischbypass then 
+			if Library:GetIcon(Icon) then
+				Icon = Library:GetIcon(Icon)
+			end
 
-		if Icon == "" or nil then
-			Icon = nil
+			if Icon == "" or nil then
+				Icon = nil
+			end
 		end
 
 		Tab.Frame = New("TextButton", {
@@ -1991,7 +2123,7 @@ Components.Tab = (function()
 			}),
 			New("TextLabel", {
 				AnchorPoint = Vector2.new(0, 0.5),
-				Position = Icon and UDim2.new(0, 30, 0.5, 0) or UDim2.new(0, 12, 0.5, 0),
+				Position = not fischbypass and Icon and UDim2.new(0, 30, 0.5, 0) or UDim2.new(0, 12, 0.5, 0),
 				Text = Title,
 				RichText = true,
 				TextColor3 = Color3.fromRGB(255, 255, 255),
@@ -2073,16 +2205,33 @@ Components.Tab = (function()
 			TabModule:SelectTab(TabIndex)
 		end)
 
+		Creator.AddSignal(Tab.Frame.InputBegan, function(Input)
+			if Input.UserInputType == Enum.UserInputType.Touch then
+				TabModule:SelectTab(TabIndex)
+			end
+		end)
+
 		TabModule.Containers[TabIndex] = Tab.ContainerFrame
 		TabModule.Tabs[TabIndex] = Tab
 
 		Tab.Container = Tab.ContainerFrame
 		Tab.ScrollFrame = Tab.Container
 
-		function Tab:AddSection(SectionTitle)
+		function Tab:AddSection(SectionTitle, SectionIcon)
 			local Section = { Type = "Section" }
 
-			local SectionFrame = Components.Section(SectionTitle, Tab.Container)
+			local Icon = SectionIcon
+			if not fischbypass then 
+				if Library:GetIcon(Icon) then
+					Icon = Library:GetIcon(Icon)
+				end
+
+				if Icon == "" or nil then
+					Icon = nil
+				end
+			end
+
+			local SectionFrame = Components.Section(SectionTitle, Tab.Container, Icon)
 			Section.Container = SectionFrame.Container
 			Section.ScrollFrame = Tab.Container
 
@@ -2373,6 +2522,8 @@ Components.Notification = (function()
 	local Notification = {}
 
 	function Notification:Init(GUI)
+		Library.ActiveNotifications = Library.ActiveNotifications or {}
+
 		Notification.Holder = New("Frame", {
 			Position = UDim2.new(1, -30, 1, -30),
 			Size = UDim2.new(0, 310, 1, -30),
@@ -2526,6 +2677,29 @@ Components.Notification = (function()
 			NewNotification:Close()
 		end)
 
+		function NewNotification:ApplyTransparency()
+			if Library.Theme == "Glass" and Library.UseAcrylic then
+				local Value = Library.NotificationTransparency or 1
+
+				local notifTransparency = 0.85 + (Value * 0.08)
+				if Value > 1 then
+					notifTransparency = 0.93 + ((Value - 1) * 0.04)
+				end
+
+				local notifBackgroundTransparency = 0.8 + (Value * 0.1)
+				if Value > 1 then
+					notifBackgroundTransparency = 0.9 + ((Value - 1) * 0.05)
+				end
+
+				if NewNotification.AcrylicPaint and NewNotification.AcrylicPaint.Model then
+					NewNotification.AcrylicPaint.Model.Transparency = math.min(notifTransparency, 0.97)
+				end
+				if NewNotification.AcrylicPaint and NewNotification.AcrylicPaint.Frame and NewNotification.AcrylicPaint.Frame.Background then
+					NewNotification.AcrylicPaint.Frame.Background.BackgroundTransparency = math.min(notifBackgroundTransparency, 0.95)
+				end
+			end
+		end
+
 		function NewNotification:Open()
 			local ContentSize = NewNotification.LabelHolder.AbsoluteSize.Y
 			NewNotification.Holder.Size = UDim2.new(1, 0, 0, 58 + ContentSize)
@@ -2534,11 +2708,24 @@ Components.Notification = (function()
 				Scale = Spring(0, { frequency = 5 }),
 				Offset = Spring(0, { frequency = 5 }),
 			})
+
+			task.defer(function()
+				task.wait(0.1)
+				NewNotification:ApplyTransparency()
+			end)
 		end
 
 		function NewNotification:Close()
 			if not NewNotification.Closed then
 				NewNotification.Closed = true
+
+				for i, notif in pairs(Library.ActiveNotifications or {}) do
+					if notif == NewNotification then
+						table.remove(Library.ActiveNotifications, i)
+						break
+					end
+				end
+
 				task.spawn(function()
 					RootMotor:setGoal({
 						Scale = Spring(1, { frequency = 5 }),
@@ -2552,6 +2739,8 @@ Components.Notification = (function()
 				end)
 			end
 		end
+
+		table.insert(Library.ActiveNotifications, NewNotification)
 
 		NewNotification:Open()
 		if Config.Duration then
@@ -2755,10 +2944,12 @@ Components.TitleBar = (function()
 				BackgroundTransparency = 1,
 			}, {
 				New("UIListLayout", {
-					Padding = UDim.new(0, 5),
+					Padding = UDim.new(0, 2),
 					FillDirection = Enum.FillDirection.Horizontal,
 					SortOrder = Enum.SortOrder.LayoutOrder,
+					VerticalAlignment = Enum.VerticalAlignment.Center,
 				}),
+
 				New("TextLabel", {
 					RichText = true,
 					Text = Config.Title,
@@ -2773,6 +2964,7 @@ Components.TitleBar = (function()
 					Size = UDim2.fromScale(0, 1),
 					AutomaticSize = Enum.AutomaticSize.X,
 					BackgroundTransparency = 1,
+					LayoutOrder = 2,
 					ThemeTag = {
 						TextColor3 = "Text",
 					},
@@ -2792,6 +2984,7 @@ Components.TitleBar = (function()
 					Size = UDim2.fromScale(0, 1),
 					AutomaticSize = Enum.AutomaticSize.X,
 					BackgroundTransparency = 1,
+					LayoutOrder = 3,
 					ThemeTag = {
 						TextColor3 = "Text",
 					},
@@ -2862,7 +3055,7 @@ Components.Window = (function()
 		local Selector = New("Frame", {
 			Size = UDim2.fromOffset(4, 0),
 			BackgroundColor3 = Color3.fromRGB(76, 194, 255),
-			Position = UDim2.fromOffset(0, 17),
+			Position = UDim2.fromOffset(0, 17 + 45),
 			AnchorPoint = Vector2.new(0, 0.5),
 			ThemeTag = {
 				BackgroundColor3 = "Accent",
@@ -2880,7 +3073,8 @@ Components.Window = (function()
 		})
 
 		Window.TabHolder = New("ScrollingFrame", {
-			Size = UDim2.fromScale(1, 1),
+			Size = UDim2.new(1, 0, 1, -45),
+			Position = UDim2.new(0, 0, 0, 45),
 			BackgroundTransparency = 1,
 			ScrollBarImageTransparency = 1,
 			ScrollBarThickness = 0,
@@ -2893,6 +3087,120 @@ Components.Window = (function()
 			}),
 		})
 
+
+		local SearchElements = {}
+		local AllElements = {}
+
+		local function UpdateElementVisibility(searchTerm)
+			searchTerm = string.lower(searchTerm or "")
+
+			for element, data in pairs(AllElements) do
+				if element and element.Parent then
+					local shouldShow = searchTerm == "" or 
+						string.find(string.lower(data.title), searchTerm, 1, true) or
+						(data.description and string.find(string.lower(data.description), searchTerm, 1, true))
+					element.Visible = shouldShow
+				end
+			end
+
+			task.spawn(function()
+				task.wait(0.01)
+				if Window and Window.TabHolder then
+					for _, child in pairs(Window.TabHolder:GetChildren()) do
+						if child:IsA("ScrollingFrame") then
+							local layout = child:FindFirstChild("UIListLayout")
+							if layout then
+								child.CanvasSize = UDim2.new(0, 0, 0, layout.AbsoluteContentSize.Y + 2)
+							end
+						end
+					end
+				end
+			end)
+		end
+
+		local function RegisterElement(elementFrame, title, elementType, description)
+			if elementFrame and title then
+				AllElements[elementFrame] = {
+					title = title,
+					type = elementType or "Element",
+					description = description or ""
+				}
+			end
+		end
+
+
+		local SearchFrame = New("Frame", {
+			Size = UDim2.new(1, 0, 0, 35),
+			Position = UDim2.new(0, 0, 0, 0),
+			BackgroundTransparency = 0.9,
+			ZIndex = 10,
+			ThemeTag = {
+				BackgroundColor3 = "Element",
+			},
+		}, {
+			New("UICorner", {
+				CornerRadius = UDim.new(0, 6),
+			}),
+			New("UIStroke", {
+				ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
+				Transparency = 0.8,
+				Thickness = 1,
+				ThemeTag = {
+					Color = "ElementBorder",
+				},
+			}),
+		})
+
+		local SearchTextbox = Components.Textbox(SearchFrame, true)
+		SearchTextbox.Frame.Size = UDim2.new(1, -50, 1, -8)
+		SearchTextbox.Frame.Position = UDim2.new(0, 8, 0, 4)
+		SearchTextbox.Input.PlaceholderText = "Search..."
+		SearchTextbox.Input.Text = ""
+
+
+
+
+
+
+
+
+		local SearchIcon = New("ImageLabel", {
+			Size = UDim2.fromOffset(18, 18),
+			Position = UDim2.new(1, -25, 0.5, 0),
+			AnchorPoint = Vector2.new(0.5, 0.5),
+			BackgroundTransparency = 1,
+			Image = "rbxassetid://10734943674",
+			Parent = SearchFrame,
+			ThemeTag = {
+				ImageColor3 = "SubText",
+			},
+		})
+
+
+		Creator.AddSignal(SearchTextbox.Input:GetPropertyChangedSignal("Text"), function()
+			local searchText = SearchTextbox.Input.Text
+			UpdateElementVisibility(searchText)
+		end)
+
+
+		Creator.AddSignal(SearchTextbox.Input.FocusLost, function(enterPressed)
+		end)
+
+		Creator.AddSignal(UserInputService.InputBegan, function(input, gameProcessed)
+			if gameProcessed then return end
+
+			if input.KeyCode == Enum.KeyCode.Escape and SearchTextbox.Input:IsFocused() then
+				SearchTextbox.Input.Text = ""
+				SearchTextbox.Input:ReleaseFocus()
+			end
+		end)
+
+
+		Window.SearchElements = SearchElements
+		Window.AllElements = AllElements
+		Window.RegisterElement = RegisterElement
+		Window.UpdateElementVisibility = UpdateElementVisibility
+
 		local TabFrame = New("Frame", {
 			Size = UDim2.new(0, Window.TabWidth, 1, -66),
 			Position = UDim2.new(0, 12, 0, 54),
@@ -2901,6 +3209,7 @@ Components.Window = (function()
 		}, {
 			Window.TabHolder,
 			Selector,
+			SearchFrame,
 		})
 
 		Window.TabDisplay = New("TextLabel", {
@@ -2991,7 +3300,7 @@ Components.Window = (function()
 		local LastValue = 0
 		local LastTime = 0
 		Window.SelectorPosMotor:onStep(function(Value)
-			Selector.Position = UDim2.new(0, 0, 0, Value + 17)
+			Selector.Position = UDim2.new(0, 0, 0, Value + 17 + 45)
 			local Now = tick()
 			local DeltaTime = Now - LastTime
 
@@ -3153,8 +3462,8 @@ Components.Window = (function()
 					})
 				else 
 					Library:Notify({
-						Title = "Interface (Mobile)",
-						Content = "Tap to the button with a Moon to toggle the interface.",
+						Title = "Interface",
+						Content = "Tap to the button to toggle the interface.",
 						Duration = 6
 					})
 				end
@@ -3262,6 +3571,12 @@ ElementsTable.Button = (function()
 			Library:SafeCallback(Config.Callback)
 		end)
 
+		Creator.AddSignal(ButtonFrame.Frame.InputBegan, function(Input)
+			if Input.UserInputType == Enum.UserInputType.Touch then
+				Library:SafeCallback(Config.Callback)
+			end
+		end)
+
 		return ButtonFrame
 	end
 
@@ -3358,6 +3673,12 @@ ElementsTable.Toggle = (function()
 
 		Creator.AddSignal(ToggleFrame.Frame.MouseButton1Click, function()
 			Toggle:SetValue(not Toggle.Value)
+		end)
+
+		Creator.AddSignal(ToggleFrame.Frame.InputBegan, function(Input)
+			if Input.UserInputType == Enum.UserInputType.Touch then
+				Toggle:SetValue(not Toggle.Value)
+			end
 		end)
 
 		Toggle:SetValue(Toggle.Value)
@@ -3557,6 +3878,16 @@ ElementsTable.Dropdown = (function()
 			Dropdown:Open()
 		end)
 
+		Creator.AddSignal(DropdownInner.InputBegan, function(Input)
+			if Input.UserInputType == Enum.UserInputType.Touch then
+				if Dropdown.Opened then
+					Dropdown:Close()
+					return
+				end
+				Dropdown:Open()
+			end
+		end)
+
 		Creator.AddSignal(DropdownDisplay:GetPropertyChangedSignal("Text"), function()
 			local Text = DropdownDisplay.Text
 			if #Text == 0 then
@@ -3575,11 +3906,7 @@ ElementsTable.Dropdown = (function()
 					Element.Visible = Similar and true or false
 				end
 			end
-			-- TweenService:Create(
-			-- 	DropdownHolderCanvas,
-			-- 	TweenInfo.new(0.3, Enum.EasingStyle.Quart, Enum.EasingDirection.Out),
-			-- 	{ Size = UDim2.fromOffset(ListSizeX, DropdownListLayout.AbsoluteContentSize.Y + 10) }
-			-- ):Play()
+
 
 			RecalculateListPosition()
 			RecalculateListSize()
@@ -4080,16 +4407,32 @@ ElementsTable.Slider = (function()
 		end)
 
 		Creator.AddSignal(UserInputService.InputChanged, function(Input)
-			if
-				Dragging
-				and (
-					Input.UserInputType == Enum.UserInputType.MouseMovement
-						or Input.UserInputType == Enum.UserInputType.Touch
-				)
-			then
-				local SizeScale =
-					math.clamp((Input.Position.X - SliderRail.AbsolutePosition.X) / SliderRail.AbsoluteSize.X, 0, 1)
+			if Dragging then
+				local position = nil
+				if Input.UserInputType == Enum.UserInputType.MouseMovement then
+					position = Input.Position
+				elseif Input.UserInputType == Enum.UserInputType.Touch then
+					position = Input.Position
+				end
+
+				if position then
+					local SizeScale = math.clamp((position.X - SliderRail.AbsolutePosition.X) / SliderRail.AbsoluteSize.X, 0, 1)
+					Slider:SetValue(Slider.Min + ((Slider.Max - Slider.Min) * SizeScale))
+				end
+			end
+		end)
+
+		Creator.AddSignal(SliderRail.InputBegan, function(Input)
+			if Input.UserInputType == Enum.UserInputType.Touch then
+				Dragging = true
+				local SizeScale = math.clamp((Input.Position.X - SliderRail.AbsolutePosition.X) / SliderRail.AbsoluteSize.X, 0, 1)
 				Slider:SetValue(Slider.Min + ((Slider.Max - Slider.Min) * SizeScale))
+			end
+		end)
+
+		Creator.AddSignal(SliderRail.InputEnded, function(Input)
+			if Input.UserInputType == Enum.UserInputType.Touch then
+				Dragging = false
 			end
 		end)
 
@@ -4811,6 +5154,12 @@ ElementsTable.Colorpicker = (function()
 
 		Creator.AddSignal(ColorpickerFrame.Frame.MouseButton1Click, function()
 			CreateColorDialog()
+		end)
+
+		Creator.AddSignal(ColorpickerFrame.Frame.InputBegan, function(Input)
+			if Input.UserInputType == Enum.UserInputType.Touch then
+				CreateColorDialog()
+			end
 		end)
 
 		Colorpicker:Display()
@@ -5864,10 +6213,9 @@ local SaveManager = {} do
 
 
 		for idx, option in next, SaveManager.Options do
-			if not self.Parser[option.Type] then continue end
-			if self.Ignore[idx] then continue end
-
-			table.insert(data.objects, self.Parser[option.Type].Save(idx, option))
+			if self.Parser[option.Type] and not self.Ignore[idx] then
+				table.insert(data.objects, self.Parser[option.Type].Save(idx, option))
+			end
 		end	
 
 		local success, encoded = pcall(httpService.JSONEncode, httpService, data)
@@ -5879,26 +6227,28 @@ local SaveManager = {} do
 		return true
 	end
 
-	function SaveManager:Load(name)
-		if (not name) then
-			return false, "no config file is selected"
-		end
-
-		local file = self.Folder .. "/" .. name .. ".json"
-		if not isfile(file) then return false, "Create Config Save File" end
-
-		local success, decoded = pcall(httpService.JSONDecode, httpService, readfile(file))
-		if not success then return false, "decode error" end
-
-		for _, option in next, decoded.objects do
-			if self.Parser[option.type] and not self.Ignore[option.idx] then
-				task.spawn(function() self.Parser[option.type].Load(option.idx, option) end) -- task.spawn() so the config loading wont get stuck.
+	if not RunService:IsStudio() then
+		function SaveManager:Load(name)
+			if (not name) then
+				return false, "no config file is selected"
 			end
+
+			local file = self.Folder .. "/" .. name .. ".json"
+			if not isfile(file) then return false, "Create Config Save File" end
+
+			local success, decoded = pcall(httpService.JSONDecode, httpService, readfile(file))
+			if not success then return false, "decode error" end
+
+			for _, option in next, decoded.objects do
+				if self.Parser[option.type] and not self.Ignore[option.idx] then
+					task.spawn(function() self.Parser[option.type].Load(option.idx, option) end)
+				end
+			end
+
+			Fluent.SettingLoaded = true
+
+			return true, decoded
 		end
-
-		Fluent.SettingLoaded = true
-
-		return true, decoded
 	end
 
 	function SaveManager:IgnoreThemeSettings()
@@ -5954,33 +6304,35 @@ local SaveManager = {} do
 		self.Options = library.Options
 	end
 
-	function SaveManager:LoadAutoloadConfig()
-		if isfile(self.Folder .. "/autoload.txt") then
-			local name = readfile(self.Folder .. "/autoload.txt")
+	if not RunService:IsStudio() then
+		function SaveManager:LoadAutoloadConfig()
+			if isfile(self.Folder .. "/autoload.txt") then
+				local name = readfile(self.Folder .. "/autoload.txt")
 
-			local success, err = self:Load(name)
-			if not success then
-				return self.Library:Notify({
+				local success, err = self:Load(name)
+				if not success then
+					return self.Library:Notify({
+						Title = "Interface",
+						Content = "Config loader",
+						SubContent = "Failed to load autoload config: " .. err,
+						Duration = 7
+					})
+				end
+
+				self.Library:Notify({
 					Title = "Interface",
 					Content = "Config loader",
-					SubContent = "Failed to load autoload config: " .. err,
+					SubContent = string.format("Auto loaded config %q", name),
 					Duration = 7
 				})
 			end
-
-			self.Library:Notify({
-				Title = "Interface",
-				Content = "Config loader",
-				SubContent = string.format("Auto loaded config %q", name),
-				Duration = 7
-			})
 		end
 	end
 
 	function SaveManager:BuildConfigSection(tab)
 		assert(self.Library, "Must set SaveManager.Library")
 
-		local section = tab:AddSection("Configuration")
+		local section = tab:AddSection("Configuration", "settings")
 
 		section:AddInput("SaveManager_ConfigName",    { Title = "Config name" })
 		section:AddDropdown("SaveManager_ConfigList", { Title = "Config list", Values = self:RefreshConfigList(), AllowNull = true })
@@ -6142,7 +6494,8 @@ local InterfaceManager = {} do
 		local path = self.Folder .. "/options.json"
 		if isfile(path) then
 			local data = readfile(path)
-			local success, decoded = pcall(httpService.JSONDecode, httpService, data)
+
+			if not RunService:IsStudio() then local success, decoded = pcall(httpService.JSONDecode, httpService, data) end
 
 			if success then
 				for i, v in next, decoded do
@@ -6159,7 +6512,7 @@ local InterfaceManager = {} do
 
 		InterfaceManager:LoadSettings()
 
-		local section = tab:AddSection("Interface")
+		local section = tab:AddSection("Interface", "monitor")
 		local InterfaceTheme = section:AddDropdown("InterfaceTheme", {
 			Title = "Theme",
 			Description = "Changes the interface theme.",
@@ -6174,7 +6527,7 @@ local InterfaceManager = {} do
 
 		InterfaceTheme:SetValue(Settings.Theme)
 
-		if Library.UseAcrylic then
+		if Library.UseAcrylic and not Mobile then
 			section:AddToggle("AcrylicToggle", {
 				Title = "Acrylic",
 				Description = "The blurred background requires graphic quality 8+",
@@ -6185,29 +6538,22 @@ local InterfaceManager = {} do
 					InterfaceManager:SaveSettings()
 				end
 			})
+		elseif Mobile then
+			Settings.Acrylic = false
 		end
 
-		section:AddToggle("TransparentToggle", {
-			Title = "Transparency",
-			Description = "Makes the interface transparent.",
-			Default = Settings.Transparency,
+		section:AddSlider("WindowTransparency", {
+			Title = "Window Transparency",
+			Description = "Adjusts the window transparency.",
+			Default = 1,
+			Min = 0,
+			Max = 3,
+			Rounding = 1,
 			Callback = function(Value)
-				Library:ToggleTransparency(Value)
-				Settings.Transparency = Value
-				InterfaceManager:SaveSettings()
+				Library:SetWindowTransparency(Value)
 			end
 		})
 
-		section:AddSlider("CooldownDragging", {
-			Title = "GUI dragging cooldown.",
-			Default = 5,
-			Min = 0,
-			Max = 50,
-			Rounding = 1,
-			Callback = function(Value)
-				CDDrag = Value
-			end,
-		})
 
 		local MenuKeybind = section:AddKeybind("MenuKeybind", { Title = "Minimize Bind", Default = Library.MinimizeKey.Name or Settings.MenuKeybind })
 		MenuKeybind:OnChanged(function()
@@ -6234,15 +6580,28 @@ function Library:CreateWindow(Config)
 		Acrylic.init()
 	end
 
+	local Icon = Config.Icon
+	if not fischbypass then 
+		if Library:GetIcon(Icon) then
+			Icon = Library:GetIcon(Icon)
+		end
+
+		if Icon == "" or Icon == nil then
+			Icon = nil
+		end
+	end
+
 	local Window = Components.Window({
 		Parent = GUI,
 		Size = Config.Size,
 		Title = Config.Title,
+		Icon = Icon,
 		SubTitle = Config.SubTitle,
 		TabWidth = Config.TabWidth,
 	})
 
 	Library.Window = Window
+	table.insert(Library.Windows, Window)
 	InterfaceManager:SetTheme(Config.Theme)
 	Library:SetTheme(Config.Theme)
 
@@ -6253,6 +6612,10 @@ function Library:SetTheme(Value)
 	if Library.Window and table.find(Library.Themes, Value) then
 		Library.Theme = Value
 		Creator.UpdateTheme()
+
+		if Value == "Glass" then
+			Library:SetWindowTransparency(0.9)
+		end
 	end
 end
 
@@ -6287,6 +6650,43 @@ function Library:ToggleTransparency(Value)
 	end
 end
 
+function Library:SetWindowTransparency(Value)
+	if Library.Window and Library.UseAcrylic then
+		Value = math.clamp(Value, 0, 3)
+
+		if Library.Theme == "Glass" then
+			local glassTransparency = 0.8 + (Value * 0.05)
+			if Value > 1 then
+				glassTransparency = 0.85 + ((Value - 1) * 0.04)
+			end
+			if Value > 2 then
+				glassTransparency = 0.93 + ((Value - 2) * 0.04)
+			end
+			Library.Window.AcrylicPaint.Model.Transparency = math.min(glassTransparency, 0.99)
+
+			local backgroundTransparency = 0.7 + (Value * 0.08)
+			if Value > 1 then
+				backgroundTransparency = 0.78 + ((Value - 1) * 0.07)
+			end
+			if Value > 2 then
+				backgroundTransparency = 0.85 + ((Value - 2) * 0.1)
+			end
+			Library.Window.AcrylicPaint.Frame.Background.BackgroundTransparency = math.min(backgroundTransparency, 0.99)
+
+			Library.NotificationTransparency = Value
+
+			for _, notification in pairs(Library.ActiveNotifications or {}) do
+				if notification and notification.ApplyTransparency then
+					notification:ApplyTransparency()
+				end
+			end
+		else
+			Library.Window.AcrylicPaint.Model.Transparency = 0.98
+			Library.Window.AcrylicPaint.Frame.Background.BackgroundTransparency = Value * 0.3
+		end
+	end
+end
+
 function Library:Notify(Config)
 	return NotificationModule:New(Config)
 end
@@ -6296,6 +6696,7 @@ if getgenv then
 else
 	Fluent = Library
 end
+
 local MinimizeButton = New("TextButton", {
 	BackgroundTransparency = 1,
 	Size = UDim2.new(1, 0, 1, 0),
@@ -6308,7 +6709,7 @@ local MinimizeButton = New("TextButton", {
 		PaddingTop = UDim.new(0, 2),
 	}),
 	New("ImageLabel", {
-		Image = Mobile and "rbxassetid://10734897102" or "",
+		Image = Mobile and Button_Icon or "rbxassetid://10734897102" or "",
 		Size = UDim2.new(1, 0, 1, 0),
 		BackgroundTransparency = 1,
 	}, {
@@ -6324,7 +6725,7 @@ local Minimizer
 if Mobile then
 	Minimizer = New("Frame", {
 		Parent = GUI,
-		Size = UDim2.new(0.06, 0, 0.15, 0),
+		Size = UDim2.new(0.08, 1, 0.1642, 1),
 		Position = UDim2.new(0.45, 0, 0.025, 0),
 		BackgroundTransparency = 1,
 		ZIndex = 999999999,
@@ -6349,6 +6750,7 @@ else
 		Position = UDim2.new(0.45, 0, 0.025, 0),
 		BackgroundTransparency = 1,
 		ZIndex = 999999999,
+		Visible = false
 	},
 	{
 		New("Frame", {
@@ -6447,322 +6849,6 @@ end)
 AddSignal(MinimizeButton.MouseButton1Click, function()
 	Library.Window:Minimize()
 end)
-
---
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-local httpService = game:GetService("HttpService")
-
-local InterfaceManager = {} do
-	InterfaceManager.Folder = "FluentSettings"
-	InterfaceManager.Settings = {
-		Theme = "Dark",
-		Acrylic = true,
-		Transparency = true,
-		MenuKeybind = "LeftControl"
-	}
-
-	function InterfaceManager:SetFolder(folder)
-		self.Folder = folder;
-		self:BuildFolderTree()
-	end
-
-	function InterfaceManager:SetLibrary(library)
-		self.Library = library
-	end
-
-	function InterfaceManager:BuildFolderTree()
-		local paths = {}
-
-		local parts = self.Folder:split("/")
-		for idx = 1, #parts do
-			paths[#paths + 1] = table.concat(parts, "/", 1, idx)
-		end
-
-		table.insert(paths, self.Folder)
-		table.insert(paths, self.Folder .. "/settings")
-
-		for i = 1, #paths do
-			local str = paths[i]
-			if not isfolder(str) then
-				makefolder(str)
-			end
-		end
-	end
-
-	function InterfaceManager:SaveSettings()
-		writefile(self.Folder .. "/options.json", httpService:JSONEncode(InterfaceManager.Settings))
-	end
-
-	function InterfaceManager:LoadSettings()
-		local path = self.Folder .. "/options.json"
-		if isfile(path) then
-			local data = readfile(path)
-			local success, decoded = nil
-
-			if success then
-				for i, v in next, decoded do
-					InterfaceManager.Settings[i] = v
-				end
-			end
-		end
-	end
-
-	function InterfaceManager:BuildInterfaceSection(tab)
-		assert(self.Library, "Must set InterfaceManager.Library")
-		local Library = self.Library
-		local Settings = InterfaceManager.Settings
-
-		InterfaceManager:LoadSettings()
-
-		local section = tab:AddSection("Interface")
-
-		local InterfaceTheme = section:AddDropdown("InterfaceTheme", {
-			Title = "Theme",
-			Description = "Changes the interface theme.",
-			Values = Library.Themes,
-			Default = Settings.Theme,
-			Callback = function(Value)
-				Library:SetTheme(Value)
-				Settings.Theme = Value
-				InterfaceManager:SaveSettings()
-			end
-		})
-
-		InterfaceTheme:SetValue(Settings.Theme)
-
-		if Library.UseAcrylic then
-			section:AddToggle("AcrylicToggle", {
-				Title = "Acrylic",
-				Description = "The blurred background requires graphic quality 8+",
-				Default = Settings.Acrylic,
-				Callback = function(Value)
-					Library:ToggleAcrylic(Value)
-					Settings.Acrylic = Value
-					InterfaceManager:SaveSettings()
-				end
-			})
-		end
-
-		section:AddToggle("TransparentToggle", {
-			Title = "Transparency",
-			Description = "Makes the interface transparent.",
-			Default = Settings.Transparency,
-			Callback = function(Value)
-				Library:ToggleTransparency(Value)
-				Settings.Transparency = Value
-				InterfaceManager:SaveSettings()
-			end
-		})
-
-		section:AddSlider("CooldownDragging", {
-			Title = "GUI dragging cooldown",
-			Default = 1,
-			Min = 0,
-			Max = 3,
-			Rounding = 1.1,
-			Callback = function(Value)
-				_G.CDDrag = Value
-			end
-		})
-
-		local MenuKeybind = section:AddKeybind("MenuKeybind", { Title = "Minimize Bind", Default = Settings.MenuKeybind })
-		MenuKeybind:OnChanged(function()
-			Settings.MenuKeybind = MenuKeybind.Value
-			InterfaceManager:SaveSettings()
-		end)
-		Library.MinimizeKeybind = MenuKeybind
-	end
-end
 
 task.wait(0.1)
 return Library, SaveManager, InterfaceManager, Mobile
