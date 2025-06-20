@@ -7,22 +7,27 @@ A modified and enhanced version of [Fluent](https://github.com/dawid-scripts/Flu
 - **🎨 Extended Theme Collection** - Much more themes available
 - **🔍 Element Search** - Search functionality across all modules and elements  
 - **🖱️ Interface Toggle Button** - Fixed and improved for both PC and mobile
-- **🎯 Icon Support** - Icons for windows, sections, and tabs using Lucide icon system
+- **🎯 Icon Support** - Icons for sections, and tabs using Lucide icon system
 - **🐛 Bug Fixes** - Various stability and performance improvements
 
 ## 📦 Installation
 
+- Beta
 ```lua
-local Fluent = loadstring(game:HttpGet("https://raw.githubusercontent.com/YOUR_USERNAME/FluentPlus/main/Source.lua"))()
+local Fluent = loadstring(Game:HttpGet("https://raw.githubusercontent.com/discoart/FluentPlus/refs/heads/main/Beta.lua"))()
 ```
+
+- Stable
+  ```lua
+  local Fluent = loadstring(Game:HttpGet("https://raw.githubusercontent.com/discoart/FluentPlus/refs/heads/main/release.lua"))()
+  ```
 
 ## 🚀 Quick Start
 
 ```lua
--- Create window with icon
+-- Create window
 local Window = Fluent:CreateWindow({
     Title = "My Script",
-    Icon = "home",  -- Lucide icon name
     SubTitle = "Enhanced UI",
     Size = UDim2.fromOffset(580, 460),
     Acrylic = true,
