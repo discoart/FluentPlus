@@ -8,7 +8,7 @@
 ╚═╝░░░░░╚══════╝░╚═════╝░╚══════╝╚═╝░░╚══╝░░░╚═╝░░░  ╚═╝░░░░░╚══════╝░╚═════╝░╚═════╝░
 
 A modified version of Fluent
-github.com/discoart/FluentPlus | dsc.gg/hydrahub
+https://github.com/discoart/FluentPlus | https://dsc.gg/hydrahub
 
 ]]
 
@@ -69,8 +69,7 @@ local Themes = {
 		"Sapphire",
 		"Cloud",
 		"Grape",
-		"Bloody",
-		"Arctic"
+		"Bloody"
 	},
 	Dark = {
 		Name = "Dark",
@@ -736,44 +735,6 @@ local Themes = {
 		Text = Color3.fromRGB(240, 240, 240),
 		SubText = Color3.fromRGB(131, 131, 131),
 		Hover = Color3.fromRGB(181, 0, 0),
-		HoverChange = 0.04
-	},
-	Arctic = {
-		Name = "Arctic",
-		Accent = Color3.fromRGB(64, 224, 255),
-		AcrylicMain = Color3.fromRGB(10, 18, 25),
-		AcrylicBorder = Color3.fromRGB(35, 55, 70),
-		AcrylicGradient = ColorSequence.new(Color3.fromRGB(15, 25, 35), Color3.fromRGB(18, 30, 40)),
-		AcrylicNoise = 0.94,
-		TitleBarLine = Color3.fromRGB(45, 70, 90),
-		Tab = Color3.fromRGB(70, 110, 140),
-		Element = Color3.fromRGB(60, 95, 120),
-		ElementBorder = Color3.fromRGB(60, 95, 120),
-		InElementBorder = Color3.fromRGB(70, 110, 140),
-		ElementTransparency = 0.88,
-		ToggleSlider = Color3.fromRGB(90, 140, 180),
-		ToggleToggled = Color3.fromRGB(15, 25, 35),
-		SliderRail = Color3.fromRGB(90, 140, 180),
-		DropdownFrame = Color3.fromRGB(110, 170, 220),
-		DropdownHolder = Color3.fromRGB(30, 45, 60),
-		DropdownBorder = Color3.fromRGB(60, 95, 120),
-		DropdownOption = Color3.fromRGB(90, 140, 180),
-		Keybind = Color3.fromRGB(90, 140, 180),
-		Input = Color3.fromRGB(90, 140, 180),
-		InputFocused = Color3.fromRGB(10, 18, 25),
-		InputIndicator = Color3.fromRGB(130, 200, 255),
-		InputIndicatorFocus = Color3.fromRGB(64, 224, 255),
-		Dialog = Color3.fromRGB(30, 45, 60),
-		DialogHolder = Color3.fromRGB(18, 30, 40),
-		DialogHolderLine = Color3.fromRGB(15, 25, 35),
-		DialogButton = Color3.fromRGB(30, 45, 60),
-		DialogButtonBorder = Color3.fromRGB(45, 70, 90),
-		DialogBorder = Color3.fromRGB(40, 60, 80),
-		DialogInput = Color3.fromRGB(35, 55, 70),
-		DialogInputLine = Color3.fromRGB(110, 170, 220),
-		Text = Color3.fromRGB(240, 250, 255),
-		SubText = Color3.fromRGB(180, 200, 220),
-		Hover = Color3.fromRGB(90, 140, 180),
 		HoverChange = 0.04
 	}
 
@@ -2522,8 +2483,6 @@ Components.Notification = (function()
 	local Notification = {}
 
 	function Notification:Init(GUI)
-		Library.ActiveNotifications = Library.ActiveNotifications or {}
-
 		Notification.Holder = New("Frame", {
 			Position = UDim2.new(1, -30, 1, -30),
 			Size = UDim2.new(0, 310, 1, -30),
@@ -2677,29 +2636,6 @@ Components.Notification = (function()
 			NewNotification:Close()
 		end)
 
-		function NewNotification:ApplyTransparency()
-			if Library.Theme == "Glass" and Library.UseAcrylic then
-				local Value = Library.NotificationTransparency or 1
-
-				local notifTransparency = 0.85 + (Value * 0.08)
-				if Value > 1 then
-					notifTransparency = 0.93 + ((Value - 1) * 0.04)
-				end
-
-				local notifBackgroundTransparency = 0.8 + (Value * 0.1)
-				if Value > 1 then
-					notifBackgroundTransparency = 0.9 + ((Value - 1) * 0.05)
-				end
-
-				if NewNotification.AcrylicPaint and NewNotification.AcrylicPaint.Model then
-					NewNotification.AcrylicPaint.Model.Transparency = math.min(notifTransparency, 0.97)
-				end
-				if NewNotification.AcrylicPaint and NewNotification.AcrylicPaint.Frame and NewNotification.AcrylicPaint.Frame.Background then
-					NewNotification.AcrylicPaint.Frame.Background.BackgroundTransparency = math.min(notifBackgroundTransparency, 0.95)
-				end
-			end
-		end
-
 		function NewNotification:Open()
 			local ContentSize = NewNotification.LabelHolder.AbsoluteSize.Y
 			NewNotification.Holder.Size = UDim2.new(1, 0, 0, 58 + ContentSize)
@@ -2708,24 +2644,11 @@ Components.Notification = (function()
 				Scale = Spring(0, { frequency = 5 }),
 				Offset = Spring(0, { frequency = 5 }),
 			})
-
-			task.defer(function()
-				task.wait(0.1)
-				NewNotification:ApplyTransparency()
-			end)
 		end
 
 		function NewNotification:Close()
 			if not NewNotification.Closed then
 				NewNotification.Closed = true
-
-				for i, notif in pairs(Library.ActiveNotifications or {}) do
-					if notif == NewNotification then
-						table.remove(Library.ActiveNotifications, i)
-						break
-					end
-				end
-
 				task.spawn(function()
 					RootMotor:setGoal({
 						Scale = Spring(1, { frequency = 5 }),
@@ -2739,8 +2662,6 @@ Components.Notification = (function()
 				end)
 			end
 		end
-
-		table.insert(Library.ActiveNotifications, NewNotification)
 
 		NewNotification:Open()
 		if Config.Duration then
@@ -2944,12 +2865,19 @@ Components.TitleBar = (function()
 				BackgroundTransparency = 1,
 			}, {
 				New("UIListLayout", {
-					Padding = UDim.new(0, 2),
+					Padding = UDim.new(0, 5),
 					FillDirection = Enum.FillDirection.Horizontal,
 					SortOrder = Enum.SortOrder.LayoutOrder,
-					VerticalAlignment = Enum.VerticalAlignment.Center,
 				}),
-
+				Config.Icon and New("ImageLabel", {
+					Image = Config.Icon,
+					Size = UDim2.fromOffset(16, 16),
+					BackgroundTransparency = 1,
+					LayoutOrder = 1,
+					ThemeTag = {
+						ImageColor3 = "Text",
+					},
+				}) or nil,
 				New("TextLabel", {
 					RichText = true,
 					Text = Config.Title,
@@ -3093,18 +3021,33 @@ Components.Window = (function()
 
 		local function UpdateElementVisibility(searchTerm)
 			searchTerm = string.lower(searchTerm or "")
+			local visibleCount = 0
+			local totalCount = 0
 
 			for element, data in pairs(AllElements) do
+				totalCount = totalCount + 1
+				local shouldShow = searchTerm == "" or 
+					string.find(string.lower(data.title), searchTerm, 1, true) or
+					(data.description and string.find(string.lower(data.description), searchTerm, 1, true))
 				if element and element.Parent then
-					local shouldShow = searchTerm == "" or 
-						string.find(string.lower(data.title), searchTerm, 1, true) or
-						(data.description and string.find(string.lower(data.description), searchTerm, 1, true))
 					element.Visible = shouldShow
+					if shouldShow then
+						visibleCount = visibleCount + 1
+					end
 				end
 			end
 
+
+			if searchTerm == "" then
+				ResultsCounter.Text = ""
+			else
+				ResultsCounter.Text = tostring(visibleCount)
+			end
+
+
 			task.spawn(function()
 				task.wait(0.01)
+
 				if Window and Window.TabHolder then
 					for _, child in pairs(Window.TabHolder:GetChildren()) do
 						if child:IsA("ScrollingFrame") then
@@ -3130,8 +3073,8 @@ Components.Window = (function()
 
 
 		local SearchFrame = New("Frame", {
-			Size = UDim2.new(1, 0, 0, 35),
-			Position = UDim2.new(0, 0, 0, 0),
+			Size = UDim2.new(1, -12, 0, 35),
+			Position = UDim2.new(0, 6, 0, 5),
 			BackgroundTransparency = 0.9,
 			ZIndex = 10,
 			ThemeTag = {
@@ -3143,8 +3086,7 @@ Components.Window = (function()
 			}),
 			New("UIStroke", {
 				ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
-				Transparency = 0.8,
-				Thickness = 1,
+				Transparency = 0.5,
 				ThemeTag = {
 					Color = "ElementBorder",
 				},
@@ -3152,21 +3094,47 @@ Components.Window = (function()
 		})
 
 		local SearchTextbox = Components.Textbox(SearchFrame, true)
-		SearchTextbox.Frame.Size = UDim2.new(1, -50, 1, -8)
-		SearchTextbox.Frame.Position = UDim2.new(0, 8, 0, 4)
+		SearchTextbox.Frame.Size = UDim2.new(1, -50, 1, -6)
+		SearchTextbox.Frame.Position = UDim2.new(0, 6, 0, 3)
 		SearchTextbox.Input.PlaceholderText = "Search..."
 		SearchTextbox.Input.Text = ""
 
 
+		local ResultsCounter = New("TextLabel", {
+			Size = UDim2.new(0, 25, 1, -6),
+			Position = UDim2.new(1, -35, 0, 3),
+			BackgroundTransparency = 1,
+			Text = "",
+			FontFace = Font.new("rbxasset://fonts/families/GothamSSm.json", Enum.FontWeight.Regular, Enum.FontStyle.Normal),
+			TextSize = 10,
+			TextXAlignment = Enum.TextXAlignment.Center,
+			TextYAlignment = Enum.TextYAlignment.Center,
+			Parent = SearchFrame,
+			ThemeTag = {
+				TextColor3 = "SubText",
+			},
+		})
 
 
-
-
+		local ClearButton = New("TextButton", {
+			Size = UDim2.fromOffset(16, 16),
+			Position = UDim2.new(1, -22, 0.5, 0),
+			AnchorPoint = Vector2.new(0.5, 0.5),
+			BackgroundTransparency = 1,
+			Parent = SearchFrame,
+			Text = "×",
+			FontFace = Font.new("rbxasset://fonts/families/GothamSSm.json", Enum.FontWeight.Medium, Enum.FontStyle.Normal),
+			TextSize = 16,
+			Visible = false,
+			ThemeTag = {
+				TextColor3 = "SubText",
+			},
+		})
 
 
 		local SearchIcon = New("ImageLabel", {
-			Size = UDim2.fromOffset(18, 18),
-			Position = UDim2.new(1, -25, 0.5, 0),
+			Size = UDim2.fromOffset(16, 16),
+			Position = UDim2.new(1, -22, 0.5, 0),
 			AnchorPoint = Vector2.new(0.5, 0.5),
 			BackgroundTransparency = 1,
 			Image = "rbxassetid://10734943674",
@@ -3180,10 +3148,27 @@ Components.Window = (function()
 		Creator.AddSignal(SearchTextbox.Input:GetPropertyChangedSignal("Text"), function()
 			local searchText = SearchTextbox.Input.Text
 			UpdateElementVisibility(searchText)
+
+
+			if searchText == "" then
+				SearchIcon.Visible = true
+				ClearButton.Visible = false
+			else
+				SearchIcon.Visible = false
+				ClearButton.Visible = true
+			end
+		end)
+
+
+		Creator.AddSignal(ClearButton.MouseButton1Click, function()
+			SearchTextbox.Input.Text = ""
 		end)
 
 
 		Creator.AddSignal(SearchTextbox.Input.FocusLost, function(enterPressed)
+			if not enterPressed then
+				return
+			end
 		end)
 
 		Creator.AddSignal(UserInputService.InputBegan, function(input, gameProcessed)
@@ -3662,7 +3647,9 @@ ElementsTable.Toggle = (function()
 			):Play()
 			ToggleCircle.ImageTransparency = Toggle.Value and 0 or 0.5
 
-			Library:SafeCallback(Toggle.Callback, Toggle.Value)
+			if Toggle.Callback ~= Toggle.Changed then
+				Library:SafeCallback(Toggle.Callback, Toggle.Value)
+			end
 			Library:SafeCallback(Toggle.Changed, Toggle.Value)
 		end
 
@@ -6332,7 +6319,7 @@ local SaveManager = {} do
 	function SaveManager:BuildConfigSection(tab)
 		assert(self.Library, "Must set SaveManager.Library")
 
-		local section = tab:AddSection("Configuration", "settings")
+		local section = tab:AddSection("Configuration")
 
 		section:AddInput("SaveManager_ConfigName",    { Title = "Config name" })
 		section:AddDropdown("SaveManager_ConfigList", { Title = "Config list", Values = self:RefreshConfigList(), AllowNull = true })
@@ -6512,7 +6499,7 @@ local InterfaceManager = {} do
 
 		InterfaceManager:LoadSettings()
 
-		local section = tab:AddSection("Interface", "monitor")
+		local section = tab:AddSection("Interface")
 		local InterfaceTheme = section:AddDropdown("InterfaceTheme", {
 			Title = "Theme",
 			Description = "Changes the interface theme.",
@@ -6542,15 +6529,14 @@ local InterfaceManager = {} do
 			Settings.Acrylic = false
 		end
 
-		section:AddSlider("WindowTransparency", {
-			Title = "Window Transparency",
-			Description = "Adjusts the window transparency.",
-			Default = 1,
-			Min = 0,
-			Max = 3,
-			Rounding = 1,
+		section:AddToggle("TransparentToggle", {
+			Title = "Transparency",
+			Description = "Makes the interface transparent.",
+			Default = Settings.Transparency,
 			Callback = function(Value)
-				Library:SetWindowTransparency(Value)
+				Library:ToggleTransparency(Value)
+				Settings.Transparency = Value
+				InterfaceManager:SaveSettings()
 			end
 		})
 
@@ -6586,7 +6572,7 @@ function Library:CreateWindow(Config)
 			Icon = Library:GetIcon(Icon)
 		end
 
-		if Icon == "" or Icon == nil then
+		if Icon == "" or nil then
 			Icon = nil
 		end
 	end
@@ -6612,10 +6598,6 @@ function Library:SetTheme(Value)
 	if Library.Window and table.find(Library.Themes, Value) then
 		Library.Theme = Value
 		Creator.UpdateTheme()
-
-		if Value == "Glass" then
-			Library:SetWindowTransparency(0.9)
-		end
 	end
 end
 
@@ -6647,43 +6629,6 @@ end
 function Library:ToggleTransparency(Value)
 	if Library.Window then
 		Library.Window.AcrylicPaint.Frame.Background.BackgroundTransparency = Value and 0.35 or 0
-	end
-end
-
-function Library:SetWindowTransparency(Value)
-	if Library.Window and Library.UseAcrylic then
-		Value = math.clamp(Value, 0, 3)
-
-		if Library.Theme == "Glass" then
-			local glassTransparency = 0.8 + (Value * 0.05)
-			if Value > 1 then
-				glassTransparency = 0.85 + ((Value - 1) * 0.04)
-			end
-			if Value > 2 then
-				glassTransparency = 0.93 + ((Value - 2) * 0.04)
-			end
-			Library.Window.AcrylicPaint.Model.Transparency = math.min(glassTransparency, 0.99)
-
-			local backgroundTransparency = 0.7 + (Value * 0.08)
-			if Value > 1 then
-				backgroundTransparency = 0.78 + ((Value - 1) * 0.07)
-			end
-			if Value > 2 then
-				backgroundTransparency = 0.85 + ((Value - 2) * 0.1)
-			end
-			Library.Window.AcrylicPaint.Frame.Background.BackgroundTransparency = math.min(backgroundTransparency, 0.99)
-
-			Library.NotificationTransparency = Value
-
-			for _, notification in pairs(Library.ActiveNotifications or {}) do
-				if notification and notification.ApplyTransparency then
-					notification:ApplyTransparency()
-				end
-			end
-		else
-			Library.Window.AcrylicPaint.Model.Transparency = 0.98
-			Library.Window.AcrylicPaint.Frame.Background.BackgroundTransparency = Value * 0.3
-		end
 	end
 end
 
