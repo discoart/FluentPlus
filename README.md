@@ -1,3 +1,4 @@
+![RobloxStudioBeta_YY5pypWTj6](https://github.com/user-attachments/assets/2295f92b-feea-4119-9820-48d61324bc9a)
 # FluentPlus - Enhanced Roblox UI Library
 
 A modified and enhanced version of [Fluent](https://github.com/dawid-scripts/Fluent) with additional features and improvements.
@@ -9,12 +10,6 @@ A modified and enhanced version of [Fluent](https://github.com/dawid-scripts/Flu
 - **🖱️ Interface Toggle Button** - Fixed and improved for both PC and mobile
 - **🎯 Icon Support** - Icons for sections, and tabs using Lucide icon system
 - **🐛 Bug Fixes** - Various stability and performance improvements
-
-## 🎥 Demo Video
-
-[![FluentPlus Demo](https://img.youtube.com/vi/BoN4PpBUJMQ/maxresdefault.jpg)](https://youtu.be/BoN4PpBUJMQ?si=Jk9F89PQn-x0Mw8J)
-
-*Click the image above to watch the demo video*
 
 ## 📦 Installation
 
