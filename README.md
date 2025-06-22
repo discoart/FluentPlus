@@ -10,7 +10,7 @@ A modified and enhanced version of [Fluent](https://github.com/dawid-scripts/Flu
 - **🖱️ Interface Toggle Button** - Fixed and improved for both PC and mobile
 - **🎯 Icon Support** - Icons for sections, and tabs using Lucide icon system
 - **🐛 Bug Fixes** - Various stability and performance improvements
-- **📃 Open Source** - This version have full source code in one script.
+- **📃 Open Source** - This version have full source code in one script
 
 ## 📦 Installation
 
