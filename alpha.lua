@@ -3034,8 +3034,8 @@ Components.Window = (function()
 			CurrentPos = 0,
 			TabWidth = 0,
 			Position = UDim2.fromOffset(
-				Camera.ViewportSize.X / 2 - Config.Size.X.Offset / 2,
-				Camera.ViewportSize.Y / 2 - Config.Size.Y.Offset / 2
+				(Camera and Camera.ViewportSize.X or 800) / 2 - Config.Size.X.Offset / 2,
+				(Camera and Camera.ViewportSize.Y or 600) / 2 - Config.Size.Y.Offset / 2
 			),
 		}
 
@@ -3146,7 +3146,7 @@ Components.Window = (function()
 		})
 
 		local SearchTextbox = Components.Textbox(SearchFrame, true)
-		SearchTextbox.Frame.Size = UDim2.new(1, -50, 1, -8)
+		SearchTextbox.Frame.Size = UDim2.new(1, -42, 1, -9)
 		SearchTextbox.Frame.Position = UDim2.new(0, 8, 0, 4)
 		SearchTextbox.Input.PlaceholderText = "Search..."
 		SearchTextbox.Input.Text = ""
@@ -3160,7 +3160,7 @@ Components.Window = (function()
 
 		local SearchIcon = New("ImageLabel", {
 			Size = UDim2.fromOffset(18, 18),
-			Position = UDim2.new(1, -25, 0.5, 0),
+			Position = UDim2.new(1, -18, 0.5, 0),
 			AnchorPoint = Vector2.new(0.5, 0.5),
 			BackgroundTransparency = 1,
 			Image = "rbxassetid://10734943674",
@@ -3327,8 +3327,8 @@ Components.Window = (function()
 				OldSizeX = Window.Size.X.Offset
 				OldSizeY = Window.Size.Y.Offset
 			end
-			local SizeX = Value and Camera.ViewportSize.X or OldSizeX
-			local SizeY = Value and Camera.ViewportSize.Y or OldSizeY
+			local SizeX = Value and (Camera and Camera.ViewportSize.X or 800) or OldSizeX
+			local SizeY = Value and (Camera and Camera.ViewportSize.Y or 600) or OldSizeY
 			SizeMotor:setGoal({
 				X = Flipper[Instant and "Instant" or "Spring"].new(SizeX, { frequency = 6 }),
 				Y = Flipper[Instant and "Instant" or "Spring"].new(SizeY, { frequency = 6 }),
@@ -3832,10 +3832,10 @@ ElementsTable.Dropdown = (function()
 
 		local function RecalculateListPosition()
 			local Add = -40
-			if Camera.ViewportSize.Y - DropdownInner.AbsolutePosition.Y < DropdownHolderCanvas.AbsoluteSize.Y - 5 then
+			if (Camera and Camera.ViewportSize.Y or 600) - DropdownInner.AbsolutePosition.Y < DropdownHolderCanvas.AbsoluteSize.Y - 5 then
 				Add = DropdownHolderCanvas.AbsoluteSize.Y
 				- 5
-				- (Camera.ViewportSize.Y - DropdownInner.AbsolutePosition.Y)
+				- ((Camera and Camera.ViewportSize.Y or 600) - DropdownInner.AbsolutePosition.Y)
 					+ 40
 			end
 			DropdownHolderCanvas.Position =
@@ -3917,11 +3917,15 @@ ElementsTable.Dropdown = (function()
 			end
 		end)
 
+		local LastOpenTime = 0
 		Creator.AddSignal(UserInputService.InputBegan, function(Input)
 			if
 				Input.UserInputType == Enum.UserInputType.MouseButton1
 				or Input.UserInputType == Enum.UserInputType.Touch
 			then
+				if tick() - LastOpenTime < 0.1 then
+					return
+				end
 				local AbsPos, AbsSize = DropdownHolderFrame.AbsolutePosition, DropdownHolderFrame.AbsoluteSize
 				if
 					Mouse.X < AbsPos.X
@@ -3937,6 +3941,7 @@ ElementsTable.Dropdown = (function()
 		local ScrollFrame = self.ScrollFrame
 		function Dropdown:Open()
 			Dropdown.Opened = true
+			LastOpenTime = tick()
 			DropdownDisplay.Interactable = Dropdown.Searchable and true or false
 			ScrollFrame.ScrollingEnabled = false
 			DropdownHolderCanvas.Visible = true
@@ -6797,7 +6802,7 @@ Creator.AddSignal(UserInputService.InputChanged, function(Input)
 	if Input == DragInput and Dragging then
 		local GuiInset = game:GetService("GuiService"):GetGuiInset()
 		local Delta = Input.Position - MousePos
-		local ViewportSize = workspace.Camera.ViewportSize
+		local ViewportSize = workspace.Camera and workspace.Camera.ViewportSize or Vector2.new(800, 600)
 		local CurrentX = StartPos.X.Scale + (Delta.X/ViewportSize.X)
 		local CurrentY = StartPos.Y.Scale + (Delta.Y/ViewportSize.Y)
 
@@ -6825,6 +6830,6 @@ AddSignal(MinimizeButton.MouseButton1Click, function()
 	Library.Window:Minimize()
 end)
 
-task.wait(0.01)
+task.wait(0.1)
 
 return Library, SaveManager, InterfaceManager, Mobile
