@@ -12,10 +12,11 @@ github.com/discoart/FluentPlus | dsc.gg/hydrahub
 
 ]]
 
---- button
+-------------------------
 local Show_Button = false
 local Button_Icon = ""
----
+local Show_Search = true
+-------------------------
 
 local Lighting = game:GetService("Lighting")
 local RunService = game:GetService("RunService")
@@ -1467,8 +1468,7 @@ function Library:SafeCallback(Function, ...)
 			Duration = 5,
 		})
 	end
-end
-
+end--so bad 
 function Library:Round(Number, Factor)
 	if Factor == 0 then
 		return math.floor(Number)
@@ -2934,15 +2934,25 @@ Components.TitleBar = (function()
 		}, {
 			New("Frame", {
 				Size = UDim2.new(1, -16, 1, 0),
-				Position = UDim2.new(0, 16, 0, 0),
+				Position = UDim2.new(0, 12, 0, 0),
 				BackgroundTransparency = 1,
 			}, {
 				New("UIListLayout", {
-					Padding = UDim.new(0, 2),
+					Padding = UDim.new(0, 5),
 					FillDirection = Enum.FillDirection.Horizontal,
 					SortOrder = Enum.SortOrder.LayoutOrder,
 					VerticalAlignment = Enum.VerticalAlignment.Center,
 				}),
+
+				Config.Icon and New("ImageLabel", {
+					Image = Config.Icon,
+					Size = UDim2.fromOffset(20, 20),
+					BackgroundTransparency = 1,
+					LayoutOrder = 1,
+					ThemeTag = {
+						ImageColor3 = "Text",
+					},
+				}) or nil,
 
 				New("TextLabel", {
 					RichText = true,
@@ -2958,7 +2968,7 @@ Components.TitleBar = (function()
 					Size = UDim2.fromScale(0, 1),
 					AutomaticSize = Enum.AutomaticSize.X,
 					BackgroundTransparency = 1,
-					LayoutOrder = 1,
+					LayoutOrder = Config.Icon and 2 or 1,
 					ThemeTag = {
 						TextColor3 = "Text",
 					},
@@ -2978,7 +2988,7 @@ Components.TitleBar = (function()
 					Size = UDim2.fromScale(0, 1),
 					AutomaticSize = Enum.AutomaticSize.X,
 					BackgroundTransparency = 1,
-					LayoutOrder = 2,
+					LayoutOrder = Config.Icon and 3 or 2,
 					ThemeTag = {
 						TextColor3 = "Text",
 					},
@@ -3034,8 +3044,8 @@ Components.Window = (function()
 			CurrentPos = 0,
 			TabWidth = 0,
 			Position = UDim2.fromOffset(
-				(Camera and Camera.ViewportSize.X or 800) / 2 - Config.Size.X.Offset / 2,
-				(Camera and Camera.ViewportSize.Y or 600) / 2 - Config.Size.Y.Offset / 2
+				Camera.ViewportSize.X / 2 - Config.Size.X.Offset / 2,
+				Camera.ViewportSize.Y / 2 - Config.Size.Y.Offset / 2
 			),
 		}
 
@@ -3128,6 +3138,7 @@ Components.Window = (function()
 			Position = UDim2.new(0, 0, 0, 0),
 			BackgroundTransparency = 0.9,
 			ZIndex = 10,
+			Visible = Show_Search,
 			ThemeTag = {
 				BackgroundColor3 = "Element",
 			},
@@ -3146,17 +3157,10 @@ Components.Window = (function()
 		})
 
 		local SearchTextbox = Components.Textbox(SearchFrame, true)
-		SearchTextbox.Frame.Size = UDim2.new(1, -42, 1, -9)
-		SearchTextbox.Frame.Position = UDim2.new(0, 8, 0, 4)
+		SearchTextbox.Frame.Size = UDim2.new(1, -44, 1, -8)
+		SearchTextbox.Frame.Position = UDim2.new(0, 10, 0, 4)
 		SearchTextbox.Input.PlaceholderText = "Search..."
 		SearchTextbox.Input.Text = ""
-
-
-
-
-
-
-
 
 		local SearchIcon = New("ImageLabel", {
 			Size = UDim2.fromOffset(18, 18),
@@ -3196,8 +3200,8 @@ Components.Window = (function()
 		Window.UpdateElementVisibility = UpdateElementVisibility
 
 		local TabFrame = New("Frame", {
-			Size = UDim2.new(0, Window.TabWidth, 1, -66),
-			Position = UDim2.new(0, 12, 0, 54),
+			Size = UDim2.new(0, Window.TabWidth, 1, Show_Search and -66 or -31),
+			Position = UDim2.new(0, 12, 0, Show_Search and 54 or 19),
 			BackgroundTransparency = 1,
 			ClipsDescendants = true,
 		}, {
@@ -3257,6 +3261,7 @@ Components.Window = (function()
 		Window.TitleBar = Components.TitleBar({
 			Title = Config.Title,
 			SubTitle = Config.SubTitle,
+			Icon = Config.Icon,
 			Parent = Window.Root,
 			Window = Window,
 		})
@@ -3327,8 +3332,8 @@ Components.Window = (function()
 				OldSizeX = Window.Size.X.Offset
 				OldSizeY = Window.Size.Y.Offset
 			end
-			local SizeX = Value and (Camera and Camera.ViewportSize.X or 800) or OldSizeX
-			local SizeY = Value and (Camera and Camera.ViewportSize.Y or 600) or OldSizeY
+			local SizeX = Value and Camera.ViewportSize.X or OldSizeX
+			local SizeY = Value and Camera.ViewportSize.Y or OldSizeY
 			SizeMotor:setGoal({
 				X = Flipper[Instant and "Instant" or "Spring"].new(SizeX, { frequency = 6 }),
 				Y = Flipper[Instant and "Instant" or "Spring"].new(SizeY, { frequency = 6 }),
@@ -3443,7 +3448,7 @@ Components.Window = (function()
 			end
 		end)
 
-		function Window:Minimize()
+				function Window:Minimize()
 			Window.Minimized = not Window.Minimized
 			Window.Root.Visible = not Window.Minimized
 			if not MinimizeNotif then
@@ -3456,24 +3461,42 @@ Components.Window = (function()
 					})
 				else 
 					Library:Notify({
-						Title = "Interface",
-						Content = "Tap to the button to toggle the interface.",
-						Duration = 6
-					})
-				end
+					Title = "Interface",
+					Content = "Tap to the button to toggle the interface.",
+					Duration = 6
+				})
 			end
-			if not RunService:IsStudio() and Mobile and Minimizer then
-				pcall(function()
-					local minimizeButton = Minimizer:FindFirstChild("Frame"):FindFirstChild("TextButton")
-					if minimizeButton then
-						local imageLabel = minimizeButton:FindFirstChild("ImageLabel")
+		end
+		
+		function Window:ToggleSearch()
+			Show_Search = not Show_Search
+			SearchFrame.Visible = Show_Search
+			TabFrame.Size = UDim2.new(0, Window.TabWidth, 1, Show_Search and -66 or -31)
+			TabFrame.Position = UDim2.new(0, 12, 0, Show_Search and 54 or 19)
+		end
+		
+		if not RunService:IsStudio() and Minimizer then
+			pcall(function()
+				if Mobile then
+					local mobileButton = Minimizer:FindFirstChild("TextButton")
+					if mobileButton then
+						local imageLabel = mobileButton:FindFirstChild("ImageLabel")
 						if imageLabel then
 							imageLabel.Image = Window.Minimized and "rbxassetid://10734896384" or "rbxassetid://10734897102"
 						end
 					end
-				end)
-			end
+				else
+					local desktopButton = Minimizer:FindFirstChild("TextButton")
+					if desktopButton then
+						local imageLabel = desktopButton:FindFirstChild("ImageLabel")
+						if imageLabel then
+							imageLabel.Image = Window.Minimized and "rbxassetid://10734896384" or "rbxassetid://10734897102"
+						end
+					end
+				end
+			end)
 		end
+	end
 
 		function Window:Destroy()
 			if Library.UseAcrylic then
@@ -3832,10 +3855,10 @@ ElementsTable.Dropdown = (function()
 
 		local function RecalculateListPosition()
 			local Add = -40
-			if (Camera and Camera.ViewportSize.Y or 600) - DropdownInner.AbsolutePosition.Y < DropdownHolderCanvas.AbsoluteSize.Y - 5 then
+			if Camera.ViewportSize.Y - DropdownInner.AbsolutePosition.Y < DropdownHolderCanvas.AbsoluteSize.Y - 5 then
 				Add = DropdownHolderCanvas.AbsoluteSize.Y
 				- 5
-				- ((Camera and Camera.ViewportSize.Y or 600) - DropdownInner.AbsolutePosition.Y)
+				- (Camera.ViewportSize.Y - DropdownInner.AbsolutePosition.Y)
 					+ 40
 			end
 			DropdownHolderCanvas.Position =
@@ -3917,15 +3940,11 @@ ElementsTable.Dropdown = (function()
 			end
 		end)
 
-		local LastOpenTime = 0
 		Creator.AddSignal(UserInputService.InputBegan, function(Input)
 			if
 				Input.UserInputType == Enum.UserInputType.MouseButton1
 				or Input.UserInputType == Enum.UserInputType.Touch
 			then
-				if tick() - LastOpenTime < 0.1 then
-					return
-				end
 				local AbsPos, AbsSize = DropdownHolderFrame.AbsolutePosition, DropdownHolderFrame.AbsoluteSize
 				if
 					Mouse.X < AbsPos.X
@@ -3941,7 +3960,6 @@ ElementsTable.Dropdown = (function()
 		local ScrollFrame = self.ScrollFrame
 		function Dropdown:Open()
 			Dropdown.Opened = true
-			LastOpenTime = tick()
 			DropdownDisplay.Interactable = Dropdown.Searchable and true or false
 			ScrollFrame.ScrollingEnabled = false
 			DropdownHolderCanvas.Visible = true
@@ -6693,20 +6711,106 @@ else
 end
 
 local MinimizeButton = New("TextButton", {
-	BackgroundTransparency = 1,
+	BackgroundColor3 = Color3.fromRGB(25, 25, 30),
 	Size = UDim2.new(1, 0, 1, 0),
-	BorderSizePixel = 0
+	BorderSizePixel = 0,
+	BackgroundTransparency = 0.05, 
 }, {
-	New("UIPadding", {
-		PaddingBottom = UDim.new(0, 2),
-		PaddingLeft = UDim.new(0, 2),
-		PaddingRight = UDim.new(0, 2),
-		PaddingTop = UDim.new(0, 2),
+	New("UICorner", {
+		CornerRadius = UDim.new(0, 14),
+	}),
+	New("UIGradient", {
+		Color = ColorSequence.new{
+			ColorSequenceKeypoint.new(0, Color3.fromRGB(40, 40, 50)),
+			ColorSequenceKeypoint.new(1, Color3.fromRGB(20, 20, 25))
+		},
+		Rotation = 45,
+	}),
+	New("UIStroke", {
+		ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
+		Color = Color3.fromRGB(100, 150, 255),
+		Transparency = 0.6,
+		Thickness = 2,
+	}),
+	New("Frame", {
+		BackgroundColor3 = Color3.fromRGB(100, 150, 255),
+		BackgroundTransparency = 0.9,
+		Size = UDim2.new(1, -6, 1, -6),
+		Position = UDim2.new(0, 3, 0, 3),
+		BorderSizePixel = 0,
+	}, {
+		New("UICorner", {
+			CornerRadius = UDim.new(0, 11),
+		}),
+	}),
+	New("Frame", {
+		BackgroundColor3 = Color3.fromRGB(255, 255, 255),
+		BackgroundTransparency = 0.94,
+		Size = UDim2.new(0.7, 0, 0.3, 0),
+		Position = UDim2.new(0.15, 0, 0.1, 0),
+		BorderSizePixel = 0,
+	}, {
+		New("UICorner", {
+			CornerRadius = UDim.new(0, 8),
+		}),
 	}),
 	New("ImageLabel", {
-		Image = Mobile and (Button_Icon ~= "" and Button_Icon or "rbxassetid://10734897102") or "rbxassetid://10734897102",
-		Size = UDim2.new(1, 0, 1, 0),
+		Image = "rbxassetid://10734897102",
+		Size = UDim2.new(0.8, 0, 0.8, 0),
+		Position = UDim2.new(0.5, 0, 0.5, 0),
+		AnchorPoint = Vector2.new(0.5, 0.5),
 		BackgroundTransparency = 1,
+		ImageColor3 = Color3.fromRGB(255, 255, 255),
+		ImageTransparency = 0.1,
+	}, {
+		New("UIAspectRatioConstraint", {
+			AspectRatio = 1,
+			AspectType = Enum.AspectType.FitWithinMaxSize,
+		})
+	})
+})
+
+local MobileMinimizeButton = New("TextButton", {
+	BackgroundColor3 = Color3.fromRGB(25, 25, 30),
+	Size = UDim2.new(1, 0, 1, 0),
+	BorderSizePixel = 0,
+	BackgroundTransparency = 0.05,
+}, {
+	New("UICorner", {
+		CornerRadius = UDim.new(0, 12),
+	}),
+	New("UIGradient", {
+		Color = ColorSequence.new{
+			ColorSequenceKeypoint.new(0, Color3.fromRGB(40, 40, 50)),
+			ColorSequenceKeypoint.new(1, Color3.fromRGB(20, 20, 25))
+		},
+		Rotation = 45,
+	}),
+	New("UIStroke", {
+		ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
+		Color = Color3.fromRGB(100, 150, 255),
+		Transparency = 0.7,
+		Thickness = 1.5,
+	}),
+	New("Frame", {
+		BackgroundColor3 = Color3.fromRGB(100, 150, 255),
+		BackgroundTransparency = 0.92,
+		Size = UDim2.new(1, -4, 1, -4),
+		Position = UDim2.new(0, 2, 0, 2),
+		BorderSizePixel = 0,
+	}, {
+		New("UICorner", {
+			CornerRadius = UDim.new(0, 10),
+		}),
+	}),
+	New("ImageLabel", {
+		Image = Button_Icon ~= "" and Button_Icon or "rbxassetid://10734897102",
+		Size = UDim2.new(0.8, 0, 0.8, 0),
+		Position = UDim2.new(0.5, 0, 0.5, 0),
+		AnchorPoint = Vector2.new(0.5, 0.5),
+		BackgroundTransparency = 1,
+		ImageColor3 = Color3.fromRGB(255, 255, 255),
+		ImageTransparency = 0.1,
 	}, {
 		New("UIAspectRatioConstraint", {
 			AspectRatio = 1,
@@ -6726,110 +6830,105 @@ if Mobile then
 		ZIndex = 999999999,
 	},
 	{
-		New("Frame", {
-			BackgroundColor3 = Color3.fromRGB(0, 0, 0),
-			Size = UDim2.new(1, 0, 1, 0),
-			BackgroundTransparency = 0.5,
-			BorderSizePixel = 0
-		}, {
-			New("UICorner", {
-				CornerRadius = UDim.new(0.25, 0),
-			}),
-			MinimizeButton
-		})
+		MobileMinimizeButton
 	})
 else
 	Minimizer = New("Frame", {
 		Parent = GUI,
-		Size = UDim2.new(0, 0, 0, 0),
-		Position = UDim2.new(0.45, 0, 0.025, 0),
+		Size = UDim2.new(0, 36, 0, 36),
+		Position = UDim2.new(0, 300, 0, 20),
 		BackgroundTransparency = 1,
 		ZIndex = 999999999,
-		Visible = false
+		Visible = Show_Button
 	},
 	{
-		New("Frame", {
-			BackgroundColor3 = Color3.fromRGB(0, 0, 0),
-			Size = UDim2.new(0, 0, 0, 0),
-			BackgroundTransparency = 0,
-			BorderSizePixel = 0
-		}, {
-			New("UICorner", {
-				CornerRadius = UDim.new(0.25, 0),
-			}),
-			MinimizeButton
-		})
+		MinimizeButton
 	})
 end
 
-Creator.AddSignal(Minimizer.InputBegan, function(Input)
-	if
-		Input.UserInputType == Enum.UserInputType.MouseButton1
-		or Input.UserInputType == Enum.UserInputType.Touch
-	then
-		Dragging = true
-		MousePos = Input.Position
-		StartPos = Minimizer.Position
+print("Минимайзер готов! Show_Button:", Show_Button)
 
-		Input.Changed:Connect(function()
+local isDragging = false
+local dragStart = nil
+local dragOffset = nil
+
+Creator.AddSignal(MinimizeButton.InputBegan, function(Input)
+	if Input.UserInputType == Enum.UserInputType.MouseButton1 then
+		isDragging = true
+		dragStart = Vector2.new(Input.Position.X, Input.Position.Y)
+		dragOffset = Minimizer.Position
+		
+		print("Начинаем перетаскивание!")
+		local connection
+		connection = Input.Changed:Connect(function()
 			if Input.UserInputState == Enum.UserInputState.End then
-				Dragging = false
+				isDragging = false
+				dragStart = nil
+				dragOffset = nil
+				connection:Disconnect()
 			end
 		end)
 	end
 end)
 
-
-
-Creator.AddSignal(MinimizeButton.InputChanged, function(Input)
-	if
-		Input.UserInputType == Enum.UserInputType.MouseMovement
-		or Input.UserInputType == Enum.UserInputType.Touch
-	then
-		DragInput = Input
+Creator.AddSignal(MobileMinimizeButton.InputBegan, function(Input)
+	if Input.UserInputType == Enum.UserInputType.MouseButton1 or Input.UserInputType == Enum.UserInputType.Touch then
+		isDragging = true
+		dragStart = Vector2.new(Input.Position.X, Input.Position.Y)
+		dragOffset = Minimizer.Position
+		local connection
+		connection = Input.Changed:Connect(function()
+			if Input.UserInputState == Enum.UserInputState.End then
+				isDragging = false
+				dragStart = nil
+				dragOffset = nil
+				connection:Disconnect()
+			end
+		end)
 	end
 end)
-Creator.AddSignal(Minimizer.InputChanged, function(Input)
-	if
-		Input.UserInputType == Enum.UserInputType.MouseMovement
-		or Input.UserInputType == Enum.UserInputType.Touch
-	then
-		DragInput = Input
-	end
-end)
 
-Creator.AddSignal(UserInputService.InputChanged, function(Input)
-	if Input == DragInput and Dragging then
-		local GuiInset = game:GetService("GuiService"):GetGuiInset()
-		local Delta = Input.Position - MousePos
-		local ViewportSize = workspace.Camera and workspace.Camera.ViewportSize or Vector2.new(800, 600)
-		local CurrentX = StartPos.X.Scale + (Delta.X/ViewportSize.X)
-		local CurrentY = StartPos.Y.Scale + (Delta.Y/ViewportSize.Y)
-
-		if CurrentX<0 or CurrentX > (ViewportSize.X - Minimizer.AbsoluteSize.X)/ViewportSize.X then
-			if CurrentX < 0 then
-				CurrentX = 0
-			else
-				CurrentX = (ViewportSize.X - Minimizer.AbsoluteSize.X)/ViewportSize.X
-			end
+local debugCount = 0
+Creator.AddSignal(RunService.Heartbeat, function()
+	if isDragging and dragStart and dragOffset and Minimizer and Minimizer.Parent then
+		debugCount = debugCount + 1
+		if debugCount % 30 == 1 then
+			print("Перетаскивание активно...")
 		end
-
-		if CurrentY < 0 or CurrentY > ((ViewportSize.Y + GuiInset.Y) - Minimizer.AbsoluteSize.Y)/(ViewportSize.Y + GuiInset.Y) then
-			if CurrentY < 0 then
-				CurrentY = 0
-			else
-				CurrentY = ((ViewportSize.Y + GuiInset.Y) - Minimizer.AbsoluteSize.Y)/(ViewportSize.Y + GuiInset.Y)
-			end
+		local Mouse = game:GetService("Players").LocalPlayer:GetMouse()
+		local currentMousePos = Vector2.new(Mouse.X, Mouse.Y)
+		local delta = currentMousePos - dragStart
+		local newX = dragOffset.X.Offset + delta.X
+		local newY = dragOffset.Y.Offset + delta.Y
+		local viewportSize = workspace.Camera.ViewportSize
+		local minimizerSize = Minimizer.AbsoluteSize
+		
+		if newX < 0 then newX = 0 end
+		if newY < 0 then newY = 0 end
+		if newX > viewportSize.X - minimizerSize.X then 
+			newX = viewportSize.X - minimizerSize.X 
 		end
-
-		Minimizer.Position = UDim2.fromScale(CurrentX, CurrentY)
+		if newY > viewportSize.Y - minimizerSize.Y then 
+			newY = viewportSize.Y - minimizerSize.Y 
+		end
+		Minimizer.Position = UDim2.new(0, newX, 0, newY)
 	end
 end)
 
 AddSignal(MinimizeButton.MouseButton1Click, function()
-	Library.Window:Minimize()
+	task.wait(0.1)
+	if not isDragging then
+		Library.Window:Minimize()
+	end
+end)
+
+AddSignal(MobileMinimizeButton.MouseButton1Click, function()
+	task.wait(0.1)
+	if not isDragging then
+		Library.Window:Minimize()
+	end
 end)
 
 task.wait(0.1)
-
+--init
 return Library, SaveManager, InterfaceManager, Mobile
