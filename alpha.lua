@@ -3448,7 +3448,7 @@ Components.Window = (function()
 			end
 		end)
 
-				function Window:Minimize()
+		function Window:Minimize()
 			Window.Minimized = not Window.Minimized
 			Window.Root.Visible = not Window.Minimized
 			if not MinimizeNotif then
@@ -3461,42 +3461,42 @@ Components.Window = (function()
 					})
 				else 
 					Library:Notify({
-					Title = "Interface",
-					Content = "Tap to the button to toggle the interface.",
-					Duration = 6
-				})
+						Title = "Interface",
+						Content = "Tap to the button to toggle the interface.",
+						Duration = 6
+					})
+				end
+			end
+
+			function Window:ToggleSearch()
+				Show_Search = not Show_Search
+				SearchFrame.Visible = Show_Search
+				TabFrame.Size = UDim2.new(0, Window.TabWidth, 1, Show_Search and -66 or -31)
+				TabFrame.Position = UDim2.new(0, 12, 0, Show_Search and 54 or 19)
+			end
+
+			if not RunService:IsStudio() and Minimizer then
+				pcall(function()
+					if Mobile then
+						local mobileButton = Minimizer:FindFirstChild("TextButton")
+						if mobileButton then
+							local imageLabel = mobileButton:FindFirstChild("ImageLabel")
+							if imageLabel then
+								imageLabel.Image = Window.Minimized and "rbxassetid://10734896384" or "rbxassetid://10734897102"
+							end
+						end
+					else
+						local desktopButton = Minimizer:FindFirstChild("TextButton")
+						if desktopButton then
+							local imageLabel = desktopButton:FindFirstChild("ImageLabel")
+							if imageLabel then
+								imageLabel.Image = Window.Minimized and "rbxassetid://10734896384" or "rbxassetid://10734897102"
+							end
+						end
+					end
+				end)
 			end
 		end
-		
-		function Window:ToggleSearch()
-			Show_Search = not Show_Search
-			SearchFrame.Visible = Show_Search
-			TabFrame.Size = UDim2.new(0, Window.TabWidth, 1, Show_Search and -66 or -31)
-			TabFrame.Position = UDim2.new(0, 12, 0, Show_Search and 54 or 19)
-		end
-		
-		if not RunService:IsStudio() and Minimizer then
-			pcall(function()
-				if Mobile then
-					local mobileButton = Minimizer:FindFirstChild("TextButton")
-					if mobileButton then
-						local imageLabel = mobileButton:FindFirstChild("ImageLabel")
-						if imageLabel then
-							imageLabel.Image = Window.Minimized and "rbxassetid://10734896384" or "rbxassetid://10734897102"
-						end
-					end
-				else
-					local desktopButton = Minimizer:FindFirstChild("TextButton")
-					if desktopButton then
-						local imageLabel = desktopButton:FindFirstChild("ImageLabel")
-						if imageLabel then
-							imageLabel.Image = Window.Minimized and "rbxassetid://10734896384" or "rbxassetid://10734897102"
-						end
-					end
-				end
-			end)
-		end
-	end
 
 		function Window:Destroy()
 			if Library.UseAcrylic then
@@ -6846,8 +6846,6 @@ else
 	})
 end
 
-print("Минимайзер готов! Show_Button:", Show_Button)
-
 local isDragging = false
 local dragStart = nil
 local dragOffset = nil
@@ -6857,8 +6855,7 @@ Creator.AddSignal(MinimizeButton.InputBegan, function(Input)
 		isDragging = true
 		dragStart = Vector2.new(Input.Position.X, Input.Position.Y)
 		dragOffset = Minimizer.Position
-		
-		print("Начинаем перетаскивание!")
+
 		local connection
 		connection = Input.Changed:Connect(function()
 			if Input.UserInputState == Enum.UserInputState.End then
@@ -6893,7 +6890,6 @@ Creator.AddSignal(RunService.Heartbeat, function()
 	if isDragging and dragStart and dragOffset and Minimizer and Minimizer.Parent then
 		debugCount = debugCount + 1
 		if debugCount % 30 == 1 then
-			print("Перетаскивание активно...")
 		end
 		local Mouse = game:GetService("Players").LocalPlayer:GetMouse()
 		local currentMousePos = Vector2.new(Mouse.X, Mouse.Y)
@@ -6902,7 +6898,7 @@ Creator.AddSignal(RunService.Heartbeat, function()
 		local newY = dragOffset.Y.Offset + delta.Y
 		local viewportSize = workspace.Camera.ViewportSize
 		local minimizerSize = Minimizer.AbsoluteSize
-		
+
 		if newX < 0 then newX = 0 end
 		if newY < 0 then newY = 0 end
 		if newX > viewportSize.X - minimizerSize.X then 
@@ -6930,5 +6926,5 @@ AddSignal(MobileMinimizeButton.MouseButton1Click, function()
 end)
 
 task.wait(0.1)
---init
+
 return Library, SaveManager, InterfaceManager, Mobile
