@@ -12,10 +12,7 @@ github.com/discoart/FluentPlus | dsc.gg/hydrahub
 
 ]]
 
---- button
-local Show_Button = false
-local Button_Icon = ""
----
+-- removed settings :)
 
 local Lighting = game:GetService("Lighting")
 local RunService = game:GetService("RunService")
@@ -29,16 +26,7 @@ local httpService = game:GetService("HttpService")
 local RunService = game:GetService("RunService")
 local UserInputService = game:GetService("UserInputService")
 
-local Mobile
-if RunService:IsStudio() then
-	Mobile = false
-else
-	Mobile = table.find({Enum.Platform.IOS, Enum.Platform.Android}, UserInputService:GetPlatform()) ~= nil
-end
-
-if Show_Button then
-	Mobile = true
-end
+local Mobile = not RunService:IsStudio() and table.find({Enum.Platform.IOS, Enum.Platform.Android}, UserInputService:GetPlatform()) ~= nil
 
 local fischbypass
 
@@ -1437,7 +1425,7 @@ Library.Creator = Creator
 local New = Creator.New
 
 local GUI = New("ScreenGui", {
-	Parent = RunService:IsStudio() and LocalPlayer.PlayerGui or game:GetService("CoreGui"),
+	Parent = LocalPlayer:WaitForChild("PlayerGui"),
 })
 Library.GUI = GUI
 ProtectGui(GUI)
@@ -1467,8 +1455,7 @@ function Library:SafeCallback(Function, ...)
 			Duration = 5,
 		})
 	end
-end
-
+end--?
 function Library:Round(Number, Factor)
 	if Factor == 0 then
 		return math.floor(Number)
@@ -1827,10 +1814,46 @@ Components.Element = (function()
 			Size = UDim2.new(1, 0, 0, 14),
 			BackgroundColor3 = Color3.fromRGB(255, 255, 255),
 			BackgroundTransparency = 1,
+			LayoutOrder = 2,
 			ThemeTag = {
 				TextColor3 = "Text",
 			},
 		})
+
+		Element.Header = New("Frame", {
+			AutomaticSize = Enum.AutomaticSize.Y,
+			BackgroundTransparency = 1,
+			Size = UDim2.new(1, 0, 0, 14),
+		}, {
+			New("UIListLayout", {
+				Padding = UDim.new(0, 5),
+				FillDirection = Enum.FillDirection.Horizontal,
+				SortOrder = Enum.SortOrder.LayoutOrder,
+				VerticalAlignment = Enum.VerticalAlignment.Center,
+			}),
+		})
+
+		if Options and Options.Icon then
+			local iconImage = Options.Icon
+			pcall(function()
+				if Library and Library.GetIcon then
+					local resolved = Library:GetIcon(Options.Icon)
+					if resolved then iconImage = resolved end
+				end
+			end)
+			Element.IconImage = New("ImageLabel", {
+				Image = iconImage,
+				Size = UDim2.fromOffset(16, 16),
+				BackgroundTransparency = 1,
+				LayoutOrder = 1,
+				ThemeTag = {
+					ImageColor3 = "Text",
+				},
+			})
+			Element.IconImage.Parent = Element.Header
+		end
+
+		Element.TitleLabel.Parent = Element.Header
 
 		Element.DescLabel = New("TextLabel", {
 			FontFace = Font.new("rbxasset://fonts/families/GothamSSm.json"),
@@ -1863,7 +1886,7 @@ Components.Element = (function()
 				PaddingBottom = UDim.new(0, 13),
 				PaddingTop = UDim.new(0, 13),
 			}),
-			Element.TitleLabel,
+			Element.Header,
 			Element.DescLabel,
 		})
 
@@ -1899,6 +1922,67 @@ Components.Element = (function()
 
 		function Element:SetTitle(Set)
 			Element.TitleLabel.Text = Set
+			local hasTitle = (Set ~= nil and Set ~= "")
+			Element.Header.Visible = hasTitle
+
+			if not hasTitle then
+				if Element.IconImage then
+					if not Element.DescRow then
+						Element.DescRow = New("Frame", {
+							AutomaticSize = Enum.AutomaticSize.Y,
+							BackgroundTransparency = 1,
+							Size = UDim2.new(1, 0, 0, 14),
+							LayoutOrder = 2,
+						}, {
+							New("UIListLayout", {
+								Padding = UDim.new(0, 5),
+								FillDirection = Enum.FillDirection.Horizontal,
+								SortOrder = Enum.SortOrder.LayoutOrder,
+								VerticalAlignment = Enum.VerticalAlignment.Center,
+							}),
+						})
+						Element.DescRow.Parent = Element.LabelHolder
+					end
+
+					if not Element.DescIconImage then
+						Element.DescIconImage = New("ImageLabel", {
+							Image = Element.IconImage.Image,
+							Size = UDim2.fromOffset(16, 16),
+							BackgroundTransparency = 1,
+							LayoutOrder = 1,
+							ThemeTag = {
+								ImageColor3 = "Text",
+							},
+						})
+						Element.DescIconImage.Parent = Element.DescRow
+					else
+						Element.DescIconImage.Image = Element.IconImage.Image
+						Element.DescIconImage.Parent = Element.DescRow
+					end
+
+					Element.DescLabel.Parent = Element.DescRow
+					Element.DescLabel.LayoutOrder = 2
+					Element.DescLabel.Size = UDim2.new(1, -24, 0, 14)
+				else
+					if Element.DescRow then
+						Element.DescRow:Destroy()
+						Element.DescRow = nil
+						Element.DescIconImage = nil
+					end
+					Element.DescLabel.Parent = Element.LabelHolder
+					Element.DescLabel.LayoutOrder = 2
+					Element.DescLabel.Size = UDim2.new(1, 0, 0, 14)
+				end
+			else
+				if Element.DescRow then
+					Element.DescRow:Destroy()
+					Element.DescRow = nil
+					Element.DescIconImage = nil
+				end
+				Element.DescLabel.Parent = Element.LabelHolder
+				Element.DescLabel.LayoutOrder = 2
+				Element.DescLabel.Size = UDim2.new(1, 0, 0, 14)
+			end
 			if Library.Windows and #Library.Windows > 0 then
 				local currentWindow = Library.Windows[#Library.Windows]
 				if currentWindow and currentWindow.AllElements and currentWindow.AllElements[Element.Frame] then
@@ -1941,7 +2025,9 @@ Components.Element = (function()
 			Element.Frame:Destroy()
 		end
 
-		Element:SetTitle(Title)
+		Element.Header.Visible = not (Title == nil or Title == "")
+
+		Element:SetTitle(Title or "")
 		Element:SetDesc(Desc)
 
 
@@ -2934,15 +3020,25 @@ Components.TitleBar = (function()
 		}, {
 			New("Frame", {
 				Size = UDim2.new(1, -16, 1, 0),
-				Position = UDim2.new(0, 16, 0, 0),
+				Position = UDim2.new(0, 12, 0, 0),
 				BackgroundTransparency = 1,
 			}, {
 				New("UIListLayout", {
-					Padding = UDim.new(0, 2),
+					Padding = UDim.new(0, 5),
 					FillDirection = Enum.FillDirection.Horizontal,
 					SortOrder = Enum.SortOrder.LayoutOrder,
 					VerticalAlignment = Enum.VerticalAlignment.Center,
 				}),
+
+				Config.Icon and New("ImageLabel", {
+					Image = Config.Icon,
+					Size = UDim2.fromOffset(20, 20),
+					BackgroundTransparency = 1,
+					LayoutOrder = 1,
+					ThemeTag = {
+						ImageColor3 = "Text",
+					},
+				}) or nil,
 
 				New("TextLabel", {
 					RichText = true,
@@ -2958,7 +3054,7 @@ Components.TitleBar = (function()
 					Size = UDim2.fromScale(0, 1),
 					AutomaticSize = Enum.AutomaticSize.X,
 					BackgroundTransparency = 1,
-					LayoutOrder = 1,
+					LayoutOrder = Config.Icon and 2 or 1,
 					ThemeTag = {
 						TextColor3 = "Text",
 					},
@@ -2978,7 +3074,7 @@ Components.TitleBar = (function()
 					Size = UDim2.fromScale(0, 1),
 					AutomaticSize = Enum.AutomaticSize.X,
 					BackgroundTransparency = 1,
-					LayoutOrder = 2,
+					LayoutOrder = Config.Icon and 3 or 2,
 					ThemeTag = {
 						TextColor3 = "Text",
 					},
@@ -3123,11 +3219,14 @@ Components.Window = (function()
 		end
 
 
+		Window.ShowSearch = (Config.Search == nil) and true or (Config.Search and true or false)
+
 		local SearchFrame = New("Frame", {
 			Size = UDim2.new(1, 0, 0, 35),
 			Position = UDim2.new(0, 0, 0, 0),
 			BackgroundTransparency = 0.9,
 			ZIndex = 10,
+			Visible = Window.ShowSearch,
 			ThemeTag = {
 				BackgroundColor3 = "Element",
 			},
@@ -3146,21 +3245,14 @@ Components.Window = (function()
 		})
 
 		local SearchTextbox = Components.Textbox(SearchFrame, true)
-		SearchTextbox.Frame.Size = UDim2.new(1, -50, 1, -8)
-		SearchTextbox.Frame.Position = UDim2.new(0, 8, 0, 4)
+		SearchTextbox.Frame.Size = UDim2.new(1, -44, 1, -8)
+		SearchTextbox.Frame.Position = UDim2.new(0, 10, 0, 4)
 		SearchTextbox.Input.PlaceholderText = "Search..."
 		SearchTextbox.Input.Text = ""
 
-
-
-
-
-
-
-
 		local SearchIcon = New("ImageLabel", {
 			Size = UDim2.fromOffset(18, 18),
-			Position = UDim2.new(1, -25, 0.5, 0),
+			Position = UDim2.new(1, -18, 0.5, 0),
 			AnchorPoint = Vector2.new(0.5, 0.5),
 			BackgroundTransparency = 1,
 			Image = "rbxassetid://10734943674",
@@ -3196,8 +3288,8 @@ Components.Window = (function()
 		Window.UpdateElementVisibility = UpdateElementVisibility
 
 		local TabFrame = New("Frame", {
-			Size = UDim2.new(0, Window.TabWidth, 1, -66),
-			Position = UDim2.new(0, 12, 0, 54),
+			Size = UDim2.new(0, Window.TabWidth, 1, Window.ShowSearch and -66 or -31),
+			Position = UDim2.new(0, 12, 0, Window.ShowSearch and 54 or 19),
 			BackgroundTransparency = 1,
 			ClipsDescendants = true,
 		}, {
@@ -3257,6 +3349,7 @@ Components.Window = (function()
 		Window.TitleBar = Components.TitleBar({
 			Title = Config.Title,
 			SubTitle = Config.SubTitle,
+			Icon = Config.Icon,
 			Parent = Window.Root,
 			Window = Window,
 		})
@@ -3446,6 +3539,14 @@ Components.Window = (function()
 		function Window:Minimize()
 			Window.Minimized = not Window.Minimized
 			Window.Root.Visible = not Window.Minimized
+
+			for _, Option in next, Library.Options do
+				if Option and Option.Type == "Dropdown" and Option.Opened then
+					pcall(function()
+						Option:Close()
+					end)
+				end
+			end
 			if not MinimizeNotif then
 				MinimizeNotif = true
 				local Key = Library.MinimizeKeybind and Library.MinimizeKeybind.Value or Library.MinimizeKey.Name
@@ -3462,13 +3563,31 @@ Components.Window = (function()
 					})
 				end
 			end
-			if not RunService:IsStudio() and Mobile and Minimizer then
+
+			function Window:ToggleSearch()
+				Window.ShowSearch = not Window.ShowSearch
+				SearchFrame.Visible = Window.ShowSearch
+				TabFrame.Size = UDim2.new(0, Window.TabWidth, 1, Window.ShowSearch and -66 or -31)
+				TabFrame.Position = UDim2.new(0, 12, 0, Window.ShowSearch and 54 or 19)
+			end
+
+			if not RunService:IsStudio() and Library.Minimizer then
 				pcall(function()
-					local minimizeButton = Minimizer:FindFirstChild("Frame"):FindFirstChild("TextButton")
-					if minimizeButton then
-						local imageLabel = minimizeButton:FindFirstChild("ImageLabel")
-						if imageLabel then
-							imageLabel.Image = Window.Minimized and "rbxassetid://10734896384" or "rbxassetid://10734897102"
+					if Mobile then
+						local mobileButton = Library.Minimizer:FindFirstChild("TextButton")
+						if mobileButton then
+							local imageLabel = mobileButton:FindFirstChild("ImageLabel")
+							if imageLabel then
+								imageLabel.Image = Window.Minimized and "rbxassetid://10734896384" or "rbxassetid://10734897102"
+							end
+						end
+					else
+						local desktopButton = Library.Minimizer:FindFirstChild("TextButton")
+						if desktopButton then
+							local imageLabel = desktopButton:FindFirstChild("ImageLabel")
+							if imageLabel then
+								imageLabel.Image = Window.Minimized and "rbxassetid://10734896384" or "rbxassetid://10734897102"
+							end
 						end
 					end
 				end)
@@ -3694,7 +3813,7 @@ ElementsTable.Dropdown = (function()
 			Opened = false,
 			Type = "Dropdown",
 			Callback = Config.Callback or function() end,
-			Searchable = Config.Searchable or false
+			Searchable = (Config.Searchable == nil) and true or Config.Searchable
 		}
 
 		if Dropdown.Multi and Config.AllowNull then
@@ -4264,7 +4383,6 @@ ElementsTable.Paragraph = (function()
 	Paragraph.__type = "Paragraph"
 
 	function Paragraph:New(Config)
-		assert(Config.Title, "Paragraph - Missing Title")
 		Config.Content = Config.Content or ""
 
 		local Paragraph = Components.Element(Config.Title, Config.Content, Paragraph.Container, false, Config)
@@ -6566,6 +6684,7 @@ function Library:CreateWindow(Config)
 	Library.UseAcrylic = Config.Acrylic or false
 	Library.Acrylic = Config.Acrylic or false
 	Library.Theme = Config.Theme or "Dark"
+
 	if Config.Acrylic then
 		Acrylic.init()
 	end
@@ -6596,6 +6715,168 @@ function Library:CreateWindow(Config)
 	Library:SetTheme(Config.Theme)
 
 	return Window
+end
+
+function Library:CreateMinimizer(Config)
+	Config = Config or {}
+	if self.Minimizer and self.Minimizer.Parent then
+		return self.Minimizer
+	end
+
+	local parentGui = Library.GUI or GUI
+	if parentGui then parentGui.DisplayOrder = 1000 end
+	local isMobile = Mobile and true or false
+
+	local iconAsset = "rbxassetid://10734897102"
+	if type(Config.Icon) == "string" and Config.Icon ~= "" then
+		pcall(function()
+			local resolved = Library:GetIcon(Config.Icon)
+			if resolved then
+				iconAsset = resolved
+			elseif string.match(Config.Icon, "^rbxassetid://%d+$") then
+				iconAsset = Config.Icon
+			end
+		end)
+	end
+
+	local useAcrylic = (Config.acrylic == true) or (Config.Acrylic == true)
+
+	local cornerRadius = tonumber(Config.Corner)
+	local backgroundTransparency = (typeof(Config.Transparency) == "number") and math.clamp(Config.Transparency, 0, 1) or nil
+	local draggableWhole = (Config.Draggable ~= false)
+
+	local iconCorner = tonumber(Config.Corner or Config.IconCorner)
+	local iconTransparency = (typeof(Config.IconTransparency) == "number") and math.clamp(Config.IconTransparency, 0, 1) or 0.05
+	local iconDraggable = (Config.IconDraggable == true)
+
+	local holder
+	local function createButton(isDesktop)
+		return New("TextButton", {
+			Name = "MinimizeButton",
+			Size = UDim2.new(1, 0, 1, 0),
+			BorderSizePixel = 0,
+			BackgroundTransparency = backgroundTransparency or 0,
+			AutoButtonColor = true,
+			ThemeTag = {
+				BackgroundColor3 = "Element",
+			},
+		}, {
+			New("UICorner", { CornerRadius = UDim.new(0, cornerRadius or (isDesktop and 14 or 12)) }),
+			New("UIStroke", {
+				ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
+				Transparency = isDesktop and 0.6 or 0.7,
+				Thickness = isDesktop and 2 or 1.5,
+				ThemeTag = {
+					Color = "ElementBorder",
+				},
+			}),
+			New("ImageLabel", {
+				Name = "Icon",
+				Image = iconAsset,
+				Size = UDim2.new(0.8, 0, 0.8, 0),
+				Position = UDim2.new(0.5, 0, 0.5, 0),
+				AnchorPoint = Vector2.new(0.5, 0.5),
+				BackgroundTransparency = 1,
+				ImageTransparency = iconTransparency,
+				ThemeTag = {
+					ImageColor3 = "Text",
+				},
+			}, {
+				New("UIAspectRatioConstraint", { AspectRatio = 1, AspectType = Enum.AspectType.FitWithinMaxSize }),
+				New("UICorner", { CornerRadius = UDim.new(0, iconCorner or 0) })
+			}),
+
+		})
+	end
+
+	if isMobile then
+		holder = New("Frame", {
+			Name = "FluentMinimizer",
+			Parent = parentGui,
+			Size = Config.Size or UDim2.fromOffset(36, 36),
+			Position = UDim2.new(0.45, 0, 0.025, 0),
+			BackgroundTransparency = 1,
+			ZIndex = 999999999,
+			Visible = true,
+		})
+	else
+		holder = New("Frame", {
+			Name = "FluentMinimizer",
+			Parent = parentGui,
+			Size = Config.Size or UDim2.fromOffset(36, 36),
+			Position = Config.Position or Config.DesktopPosition or UDim2.new(0, 300, 0, 20),
+			BackgroundTransparency = 1,
+			ZIndex = 999999999,
+			Visible = Config.Visible ~= false,
+		})
+	end
+
+	if useAcrylic then
+		local miniAcrylic = Acrylic.AcrylicPaint()
+		miniAcrylic.Frame.Parent = holder
+		miniAcrylic.Frame.Size = UDim2.fromScale(1, 1)
+		pcall(function() miniAcrylic.AddParent(holder) end)
+		self.MinimizerAcrylic = miniAcrylic
+	end
+
+	local btnInstance = createButton(not isMobile)
+	btnInstance.Parent = holder
+	btnInstance.ZIndex = (holder.ZIndex or 0) + 1
+
+	local button = holder:FindFirstChildOfClass("TextButton")
+	if button then
+		local isDragging = false
+		local dragStart, dragOffset
+
+		if draggableWhole then
+			Creator.AddSignal(((iconDraggable and button.Icon) or button).InputBegan, function(Input)
+				if Input.UserInputType == Enum.UserInputType.MouseButton1 or Input.UserInputType == Enum.UserInputType.Touch then
+					isDragging = true
+					local pos = Input.Position
+					dragStart = Vector2.new(pos.X, pos.Y)
+					dragOffset = holder.Position
+					local conn
+					conn = Input.Changed:Connect(function()
+						if Input.UserInputState == Enum.UserInputState.End then
+							isDragging = false
+							dragStart = nil
+							dragOffset = nil
+							conn:Disconnect()
+						end
+					end)
+				end
+			end)
+
+			Creator.AddSignal(RunService.Heartbeat, function()
+				if isDragging and dragStart and dragOffset and holder and holder.Parent then
+					local mouse = LocalPlayer:GetMouse()
+					local current = Vector2.new(mouse.X, mouse.Y)
+					local delta = current - dragStart
+					local newX = dragOffset.X.Offset + delta.X
+					local newY = dragOffset.Y.Offset + delta.Y
+					local viewport = workspace.Camera.ViewportSize
+					local size = holder.AbsoluteSize
+					if newX < 0 then newX = 0 end
+					if newY < 0 then newY = 0 end
+					if newX > viewport.X - size.X then newX = viewport.X - size.X end
+					if newY > viewport.Y - size.Y then newY = viewport.Y - size.Y end
+					holder.Position = UDim2.new(0, newX, 0, newY)
+				end
+			end)
+		end
+
+		AddSignal(button.MouseButton1Click, function()
+			task.wait(0.1)
+			if not isDragging and Library.Window then
+				Library.Window:Minimize()
+			end
+		end)
+	end
+
+
+
+	self.Minimizer = holder
+	return holder
 end
 
 function Library:SetTheme(Value)
@@ -6688,20 +6969,106 @@ else
 end
 
 local MinimizeButton = New("TextButton", {
-	BackgroundTransparency = 1,
+	BackgroundColor3 = Color3.fromRGB(25, 25, 30),
 	Size = UDim2.new(1, 0, 1, 0),
-	BorderSizePixel = 0
+	BorderSizePixel = 0,
+	BackgroundTransparency = 0.05, 
 }, {
-	New("UIPadding", {
-		PaddingBottom = UDim.new(0, 2),
-		PaddingLeft = UDim.new(0, 2),
-		PaddingRight = UDim.new(0, 2),
-		PaddingTop = UDim.new(0, 2),
+	New("UICorner", {
+		CornerRadius = UDim.new(0, 14),
+	}),
+	New("UIGradient", {
+		Color = ColorSequence.new{
+			ColorSequenceKeypoint.new(0, Color3.fromRGB(40, 40, 50)),
+			ColorSequenceKeypoint.new(1, Color3.fromRGB(20, 20, 25))
+		},
+		Rotation = 45,
+	}),
+	New("UIStroke", {
+		ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
+		Color = Color3.fromRGB(100, 150, 255),
+		Transparency = 0.6,
+		Thickness = 2,
+	}),
+	New("Frame", {
+		BackgroundColor3 = Color3.fromRGB(100, 150, 255),
+		BackgroundTransparency = 0.9,
+		Size = UDim2.new(1, -6, 1, -6),
+		Position = UDim2.new(0, 3, 0, 3),
+		BorderSizePixel = 0,
+	}, {
+		New("UICorner", {
+			CornerRadius = UDim.new(0, 11),
+		}),
+	}),
+	New("Frame", {
+		BackgroundColor3 = Color3.fromRGB(255, 255, 255),
+		BackgroundTransparency = 0.94,
+		Size = UDim2.new(0.7, 0, 0.3, 0),
+		Position = UDim2.new(0.15, 0, 0.1, 0),
+		BorderSizePixel = 0,
+	}, {
+		New("UICorner", {
+			CornerRadius = UDim.new(0, 8),
+		}),
 	}),
 	New("ImageLabel", {
-		Image = Mobile and (Button_Icon ~= "" and Button_Icon or "rbxassetid://10734897102") or "rbxassetid://10734897102",
-		Size = UDim2.new(1, 0, 1, 0),
+		Image = "rbxassetid://10734897102",
+		Size = UDim2.new(0.8, 0, 0.8, 0),
+		Position = UDim2.new(0.5, 0, 0.5, 0),
+		AnchorPoint = Vector2.new(0.5, 0.5),
 		BackgroundTransparency = 1,
+		ImageColor3 = Color3.fromRGB(255, 255, 255),
+		ImageTransparency = 0.1,
+	}, {
+		New("UIAspectRatioConstraint", {
+			AspectRatio = 1,
+			AspectType = Enum.AspectType.FitWithinMaxSize,
+		})
+	})
+})
+
+local MobileMinimizeButton = New("TextButton", {
+	BackgroundColor3 = Color3.fromRGB(25, 25, 30),
+	Size = UDim2.new(1, 0, 1, 0),
+	BorderSizePixel = 0,
+	BackgroundTransparency = 0.05,
+}, {
+	New("UICorner", {
+		CornerRadius = UDim.new(0, 12),
+	}),
+	New("UIGradient", {
+		Color = ColorSequence.new{
+			ColorSequenceKeypoint.new(0, Color3.fromRGB(40, 40, 50)),
+			ColorSequenceKeypoint.new(1, Color3.fromRGB(20, 20, 25))
+		},
+		Rotation = 45,
+	}),
+	New("UIStroke", {
+		ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
+		Color = Color3.fromRGB(100, 150, 255),
+		Transparency = 0.7,
+		Thickness = 1.5,
+	}),
+	New("Frame", {
+		BackgroundColor3 = Color3.fromRGB(100, 150, 255),
+		BackgroundTransparency = 0.92,
+		Size = UDim2.new(1, -4, 1, -4),
+		Position = UDim2.new(0, 2, 0, 2),
+		BorderSizePixel = 0,
+	}, {
+		New("UICorner", {
+			CornerRadius = UDim.new(0, 10),
+		}),
+	}),
+	New("ImageLabel", {
+		Image = "rbxassetid://10734897102",
+		Size = UDim2.new(0.8, 0, 0.8, 0),
+		Position = UDim2.new(0.5, 0, 0.5, 0),
+		AnchorPoint = Vector2.new(0.5, 0.5),
+		BackgroundTransparency = 1,
+		ImageColor3 = Color3.fromRGB(255, 255, 255),
+		ImageTransparency = 0.1,
 	}, {
 		New("UIAspectRatioConstraint", {
 			AspectRatio = 1,
@@ -6712,119 +7079,86 @@ local MinimizeButton = New("TextButton", {
 
 local Minimizer
 
-if Mobile then
-	Minimizer = New("Frame", {
-		Parent = GUI,
-		Size = UDim2.new(0.08, 1, 0.1642, 1),
-		Position = UDim2.new(0.45, 0, 0.025, 0),
-		BackgroundTransparency = 1,
-		ZIndex = 999999999,
-	},
-	{
-		New("Frame", {
-			BackgroundColor3 = Color3.fromRGB(0, 0, 0),
-			Size = UDim2.new(1, 0, 1, 0),
-			BackgroundTransparency = 0.5,
-			BorderSizePixel = 0
-		}, {
-			New("UICorner", {
-				CornerRadius = UDim.new(0.25, 0),
-			}),
-			MinimizeButton
-		})
-	})
-else
-	Minimizer = New("Frame", {
-		Parent = GUI,
-		Size = UDim2.new(0, 0, 0, 0),
-		Position = UDim2.new(0.45, 0, 0.025, 0),
-		BackgroundTransparency = 1,
-		ZIndex = 999999999,
-		Visible = false
-	},
-	{
-		New("Frame", {
-			BackgroundColor3 = Color3.fromRGB(0, 0, 0),
-			Size = UDim2.new(0, 0, 0, 0),
-			BackgroundTransparency = 0,
-			BorderSizePixel = 0
-		}, {
-			New("UICorner", {
-				CornerRadius = UDim.new(0.25, 0),
-			}),
-			MinimizeButton
-		})
-	})
-end
+local isDragging = false
+local dragStart = nil
+local dragOffset = nil
 
-Creator.AddSignal(Minimizer.InputBegan, function(Input)
-	if
-		Input.UserInputType == Enum.UserInputType.MouseButton1
-		or Input.UserInputType == Enum.UserInputType.Touch
-	then
-		Dragging = true
-		MousePos = Input.Position
-		StartPos = Minimizer.Position
+Creator.AddSignal(MinimizeButton.InputBegan, function(Input)
+	if Input.UserInputType == Enum.UserInputType.MouseButton1 then
+		isDragging = true
+		dragStart = Vector2.new(Input.Position.X, Input.Position.Y)
+		dragOffset = (Library.Minimizer or Minimizer).Position
 
-		Input.Changed:Connect(function()
+		local connection
+		connection = Input.Changed:Connect(function()
 			if Input.UserInputState == Enum.UserInputState.End then
-				Dragging = false
+				isDragging = false
+				dragStart = nil
+				dragOffset = nil
+				connection:Disconnect()
 			end
 		end)
 	end
 end)
 
-
-
-Creator.AddSignal(MinimizeButton.InputChanged, function(Input)
-	if
-		Input.UserInputType == Enum.UserInputType.MouseMovement
-		or Input.UserInputType == Enum.UserInputType.Touch
-	then
-		DragInput = Input
+Creator.AddSignal(MobileMinimizeButton.InputBegan, function(Input)
+	if Input.UserInputType == Enum.UserInputType.MouseButton1 or Input.UserInputType == Enum.UserInputType.Touch then
+		isDragging = true
+		dragStart = Vector2.new(Input.Position.X, Input.Position.Y)
+		dragOffset = (Library.Minimizer or Minimizer).Position
+		local connection
+		connection = Input.Changed:Connect(function()
+			if Input.UserInputState == Enum.UserInputState.End then
+				isDragging = false
+				dragStart = nil
+				dragOffset = nil
+				connection:Disconnect()
+			end
+		end)
 	end
 end)
-Creator.AddSignal(Minimizer.InputChanged, function(Input)
-	if
-		Input.UserInputType == Enum.UserInputType.MouseMovement
-		or Input.UserInputType == Enum.UserInputType.Touch
-	then
-		DragInput = Input
-	end
-end)
 
-Creator.AddSignal(UserInputService.InputChanged, function(Input)
-	if Input == DragInput and Dragging then
-		local GuiInset = game:GetService("GuiService"):GetGuiInset()
-		local Delta = Input.Position - MousePos
-		local ViewportSize = workspace.Camera.ViewportSize
-		local CurrentX = StartPos.X.Scale + (Delta.X/ViewportSize.X)
-		local CurrentY = StartPos.Y.Scale + (Delta.Y/ViewportSize.Y)
-
-		if CurrentX<0 or CurrentX > (ViewportSize.X - Minimizer.AbsoluteSize.X)/ViewportSize.X then
-			if CurrentX < 0 then
-				CurrentX = 0
-			else
-				CurrentX = (ViewportSize.X - Minimizer.AbsoluteSize.X)/ViewportSize.X
-			end
+local debugCount = 0
+Creator.AddSignal(RunService.Heartbeat, function()
+	local activeMin = Library.Minimizer or Minimizer
+	if isDragging and dragStart and dragOffset and activeMin and activeMin.Parent then
+		debugCount = debugCount + 1
+		if debugCount % 30 == 1 then
 		end
+		local Mouse = game:GetService("Players").LocalPlayer:GetMouse()
+		local currentMousePos = Vector2.new(Mouse.X, Mouse.Y)
+		local delta = currentMousePos - dragStart
+		local newX = dragOffset.X.Offset + delta.X
+		local newY = dragOffset.Y.Offset + delta.Y
+		local viewportSize = workspace.Camera.ViewportSize
+		local minimizerSize = activeMin.AbsoluteSize
 
-		if CurrentY < 0 or CurrentY > ((ViewportSize.Y + GuiInset.Y) - Minimizer.AbsoluteSize.Y)/(ViewportSize.Y + GuiInset.Y) then
-			if CurrentY < 0 then
-				CurrentY = 0
-			else
-				CurrentY = ((ViewportSize.Y + GuiInset.Y) - Minimizer.AbsoluteSize.Y)/(ViewportSize.Y + GuiInset.Y)
-			end
+		if newX < 0 then newX = 0 end
+		if newY < 0 then newY = 0 end
+		if newX > viewportSize.X - minimizerSize.X then 
+			newX = viewportSize.X - minimizerSize.X 
 		end
-
-		Minimizer.Position = UDim2.fromScale(CurrentX, CurrentY)
+		if newY > viewportSize.Y - minimizerSize.Y then 
+			newY = viewportSize.Y - minimizerSize.Y 
+		end
+		activeMin.Position = UDim2.new(0, newX, 0, newY)
 	end
 end)
 
 AddSignal(MinimizeButton.MouseButton1Click, function()
-	Library.Window:Minimize()
+	task.wait(0.1)
+	if not isDragging then
+		Library.Window:Minimize()
+	end
 end)
 
-task.wait(0.01)
+AddSignal(MobileMinimizeButton.MouseButton1Click, function()
+	task.wait(0.1)
+	if not isDragging then
+		Library.Window:Minimize()
+	end
+end)
+
+task.wait(0.1)
 
 return Library, SaveManager, InterfaceManager, Mobile
