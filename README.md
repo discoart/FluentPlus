@@ -8,7 +8,7 @@ A modified and enhanced version of [Fluent](https://github.com/dawid-scripts/Flu
 - **🎨 Extended Theme Collection** - Much more themes available
 - **🔍 Element Search** - Search functionality across all modules and elements  
 - **🖱️ Interface Toggle Button** - Fixed and improved for both PC and mobile
-- **🎯 Icon Support** - Icons for sections, and tabs using Lucide icon system
+- **🎯 Icon Support** - Icons for sections, window title and tabs using Lucide icon system
 - **🐛 Bug Fixes** - Various stability and performance improvements
 - **📃 Open Source** - This version have full source code in one script
 
