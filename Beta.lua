@@ -2694,8 +2694,6 @@ Components.Notification = (function()
 			NewNotification.SubContentLabel,
 		})
 
-		-- Buttons are intentionally not supported to keep notifications lightweight
-
 		NewNotification.CloseButton = New("TextButton", {
 			Text = "",
 			Position = UDim2.new(1, -14, 0, 13),
@@ -3091,7 +3089,6 @@ Components.TitleBar = (function()
 					},
 				}) or nil,
 
-				-- user info in title removed per request
 			}),
 			New("Frame", {
 				BackgroundTransparency = 0.5,
@@ -3150,7 +3147,6 @@ Components.Window = (function()
 
 		Window.AcrylicPaint = Acrylic.AcrylicPaint()
 
-		-- Center the window after Root is sized and parented
 		local function CenterWindow()
 			local vp = Camera.ViewportSize
 			local x = math.max(0, (vp.X - Window.Size.X.Offset) / 2)
@@ -3366,7 +3362,6 @@ Components.Window = (function()
 			ResizeStartFrame,
 		})
 
-		-- Center after root creation; and recenter on resize
 		CenterWindow()
 		Creator.AddSignal(Camera:GetPropertyChangedSignal("ViewportSize"), function()
 			CenterWindow()
@@ -3384,7 +3379,6 @@ Components.Window = (function()
 			UserInfoSubtitleColor = Config.UserInfoSubtitleColor,
 		})
 
-		-- User info section under all tabs
 		if Config.UserInfo then
 			local function parseColor(value)
 				if typeof(value) == "Color3" then return value end
@@ -3400,7 +3394,6 @@ Components.Window = (function()
 				Parent = TabFrame,
 			})
 
-			-- separator between tabs and user info (like title bar line)
 			New("Frame", {
 				Name = "UserInfoSeparator",
 				BackgroundTransparency = 0.5,
@@ -3434,11 +3427,9 @@ Components.Window = (function()
 				end
 			end)
 
-			-- Title & Subtitle values
 			local titleText = tostring((Config.UserInfoTitle ~= nil and Config.UserInfoTitle) or (LocalPlayer.Name or "User"))
 			local subtitleText = (Config.UserInfoSubtitle ~= nil) and tostring(Config.UserInfoSubtitle) or ""
 
-			-- Name (theme color)
 			New("TextLabel", {
 				Name = "UserName",
 				BackgroundTransparency = 1,
@@ -3452,7 +3443,7 @@ Components.Window = (function()
 				Parent = UserInfoSection,
 				ThemeTag = { TextColor3 = "Text" },
 			})
-			-- Subtitle (custom color)
+
 			New("TextLabel", {
 				Name = "UserSubtitle",
 				BackgroundTransparency = 1,
@@ -3468,12 +3459,9 @@ Components.Window = (function()
 				Parent = UserInfoSection,
 			})
 
-			-- shrink tab list to leave space for user info at bottom
 			if Config.UserInfoTop then
-				-- pull the whole tab column higher when user info is on top
 				TabFrame.Position = UDim2.new(0, 12, 0, 39)
 				TabFrame.Size = UDim2.new(0, Window.TabWidth, 1, -31)
-				-- stack inside TabFrame: user info at top, then search, then tab holder
 				SearchFrame.Position = UDim2.new(0, 0, 0, userInfoHeight + 6)
 				Window.TabHolder.Position = UDim2.new(0, 0, 0, 45 + userInfoHeight + 6)
 				Window.TabHolder.Size = UDim2.new(1, 0, 1, -(45 + userInfoHeight + 24))
@@ -3518,8 +3506,7 @@ Components.Window = (function()
 		local LastTime = 0
 		Window.SelectorPosMotor:onStep(function(Value)
 			local base = Window.TabHolderTop or 45
-			-- keep selector centered to the tab even when we compress the gap under user info
-			local verticalInset = 16 -- was 17
+			local verticalInset = 16
 			Selector.Position = UDim2.new(0, 0, 0, base + Value + verticalInset)
 			local Now = tick()
 			local DeltaTime = Now - LastTime
@@ -3739,7 +3726,6 @@ Components.Window = (function()
 			local Dialog = DialogModule:Create()
 			Dialog.Title.Text = Config.Title
 
-			-- scrollable content area to handle long text without breaking layout
 			local ContentHolder = New("ScrollingFrame", {
 				BackgroundTransparency = 1,
 				ScrollBarImageTransparency = 0.7,
@@ -3775,12 +3761,10 @@ Components.Window = (function()
 				Parent = Dialog.Root,
 			})
 
-			-- compute dialog width and height robustly with wrapping and scrolling
 			local maxWidth = math.min(620, Window.Size.X.Offset - 120)
 			local baseWidth = math.max(300, math.min(maxWidth, Content.TextBounds.X + 40))
 			Dialog.Root.Size = UDim2.fromOffset(baseWidth, 165)
 			ContentHolder.Size = UDim2.new(1, -40, 1, -110)
-			-- wait a frame for TextBounds to update with wrapping at new width
 			task.defer(function()
 				local contentHeight = Content.TextBounds.Y
 				local desired = math.clamp(contentHeight + 110, 165, 420)
@@ -4057,7 +4041,6 @@ ElementsTable.Dropdown = (function()
 			DropdownListLayout,
 		})
 
-		-- Optional search box
 		local SearchBar
 		local SearchBox
 		if Dropdown.Search then
@@ -4071,7 +4054,7 @@ ElementsTable.Dropdown = (function()
 				New("UICorner", { CornerRadius = UDim.new(0, 8) }),
 				New("UIStroke", { Name = "Stroke", Transparency = 0.45, ApplyStrokeMode = Enum.ApplyStrokeMode.Border, ThemeTag = { Color = "DropdownBorder" } }),
 				New("ImageLabel", {
-					Image = "rbxassetid://10734943674", -- search icon
+					Image = "rbxassetid://10734943674",
 					BackgroundTransparency = 1,
 					Size = UDim2.fromOffset(16, 16),
 					Position = UDim2.fromOffset(8, 6),
@@ -4097,10 +4080,8 @@ ElementsTable.Dropdown = (function()
 				ZIndex = 24,
 			})
 
-			-- theme-aware focus states
 			local SearchStroke = SearchBar:FindFirstChild("Stroke")
 			Creator.AddSignal(SearchBox.Focused, function()
-				-- keep same light background on focus; slightly strengthen stroke color
 				Creator.OverrideTag(SearchBar, { BackgroundColor3 = "DropdownFrame" })
 				if SearchStroke then
 					Creator.OverrideTag(SearchStroke, { Color = "Accent" })
@@ -4115,7 +4096,6 @@ ElementsTable.Dropdown = (function()
 				end
 			end)
 
-			-- move scroll list below search
 			DropdownScrollFrame.Position = UDim2.fromOffset(5, 38)
 			DropdownScrollFrame.Size = UDim2.new(1, -5, 1, -43)
 
@@ -4196,8 +4176,6 @@ ElementsTable.Dropdown = (function()
 
 		local ListSizeX = 0
 		local function RecalculateListSize()
-			-- Keep dropdown height stable regardless of current filtering by basing it on
-			-- the total number of configured values rather than visible elements.
 			local totalCount = #Dropdown.Values
 			local itemHeight = 32
 			local padding = 3
@@ -4207,7 +4185,6 @@ ElementsTable.Dropdown = (function()
 			local many = totalCount > 10
 			local targetHeight = math.min(estimatedContent, maxHeight)
 			DropdownHolderCanvas.Size = UDim2.fromOffset(ListSizeX, targetHeight)
-			-- show full list height when small, fixed cap when many
 			DropdownHolderFrame.Size = UDim2.fromScale(1, many and 0.6 or 1)
 		end
 
@@ -4243,7 +4220,6 @@ ElementsTable.Dropdown = (function()
 			end
 		end)
 
-		-- No search input now; ensure all options stay visible regardless of selected value
 		Creator.AddSignal(DropdownDisplay:GetPropertyChangedSignal("Text"), function()
 			for _, Element in next, DropdownScrollFrame:GetChildren() do
 				if not Element:IsA("UIListLayout") then
@@ -4274,13 +4250,11 @@ ElementsTable.Dropdown = (function()
 		local ScrollFrame = self.ScrollFrame
 		function Dropdown:Open()
 			Dropdown.Opened = true
-			-- close other open dropdowns first
 			for _, frame in ipairs(Library.OpenFrames) do
 				if frame ~= DropdownHolderCanvas and frame.Visible then
 					frame.Visible = false
 				end
 			end
-			-- reset search if not persistent
 			if SearchBox and not Dropdown.KeepSearch then
 				SearchBox.Text = ""
 			end
@@ -4309,7 +4283,6 @@ ElementsTable.Dropdown = (function()
 				{ Rotation = 180 }
 			):Play()
 			Dropdown:Display()
-			-- restore visibility when closing so next open starts clean
 			for _, element in next, DropdownScrollFrame:GetChildren() do
 				if not element:IsA("UIListLayout") then
 					element.Visible = true
@@ -4367,8 +4340,6 @@ ElementsTable.Dropdown = (function()
 					Element:Destroy()
 				end
 			end
-
-			-- search UI removed; render values directly
 
 			local Count = 0
 
@@ -4487,7 +4458,6 @@ ElementsTable.Dropdown = (function()
 
 						Table:UpdateButton()
 
-						-- update label text after selection
 						Dropdown:Display()
 
 						Library:SafeCallback(Dropdown.Callback, Dropdown.Value)
@@ -7045,7 +7015,6 @@ function Library:CreateMinimizer(Config)
 		miniAcrylic.Frame.Size = UDim2.fromScale(1, 1)
 		pcall(function() miniAcrylic.AddParent(holder) end)
 
-		-- Ensure acrylic visuals conform to minimizer size and corner radius
 		local desiredCorner = UDim.new(0, cornerRadius or 0)
 		pcall(function()
 			for _, descendant in ipairs(miniAcrylic.Frame:GetDescendants()) do
