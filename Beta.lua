@@ -6944,9 +6944,6 @@ function Library:CreateMinimizer(Config)
 	local backgroundTransparency = (typeof(Config.Transparency) == "number") and math.clamp(Config.Transparency, 0, 1) or 0
 	local draggableWhole = (Config.Draggable == true)
 
-	local iconCorner = tonumber(Config.Corner)
-	local iconTransparency = 0.1
-
 	local holder
 	local function createButton(isDesktop)
 		return New("TextButton", {
@@ -6975,13 +6972,12 @@ function Library:CreateMinimizer(Config)
 				Position = UDim2.new(0.5, 0, 0.5, 0),
 				AnchorPoint = Vector2.new(0.5, 0.5),
 				BackgroundTransparency = 1,
-				ImageTransparency = iconTransparency,
 				ThemeTag = {
 					ImageColor3 = "Text",
 				},
 			}, {
 				New("UIAspectRatioConstraint", { AspectRatio = 1, AspectType = Enum.AspectType.FitWithinMaxSize }),
-				New("UICorner", { CornerRadius = UDim.new(0, iconCorner or 0) })
+				New("UICorner", { CornerRadius = UDim.new(0, 0) })
 			}),
 
 		})
