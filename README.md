@@ -18,6 +18,6 @@ A modified and enhanced version of [Fluent](https://github.com/dawid-scripts/Flu
 
 Dark, Darker, AMOLED, Light, Balloon, SoftCream, Aqua, Amethyst, Rose, Midnight, Forest, Sunset, Ocean, Emerald, Sapphire, Cloud, Grape, Bloody
 
-## 📄 License
 
-Based on the original [Fluent](https://github.com/dawid-scripts/Fluent) library.
+
+Based on [fluent 1.2.2](https://github.com/dawid-scripts/Fluent)
