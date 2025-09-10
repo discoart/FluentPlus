@@ -11,7 +11,7 @@ local Window = Fluent:CreateWindow({
     Size = UDim2.fromOffset(580, 460),
     Acrylic = true, -- The blur may be detectable, setting this to false disables blur entirely
     Theme = "Dark",
-    MinimizeKey = Enum.KeyCode.LeftControl -- Used when theres no MinimizeKeybind
+    MinimizeKey = Enum.KeyCode.LeftControl, -- Used when theres no MinimizeKeybind
 
     UserInfo = true,
     UserInfoTop = false, -- display user info at the top of the window
