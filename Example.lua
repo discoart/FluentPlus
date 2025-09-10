@@ -5,12 +5,19 @@ local InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.
 local Window = Fluent:CreateWindow({
     Title = "Fluent " .. Fluent.Version,
     SubTitle = "by dawid",
-    Icon = "home",
+    Search = true, -- optional and default true
+    Icon = "home", -- optional
     TabWidth = 160,
     Size = UDim2.fromOffset(580, 460),
     Acrylic = true, -- The blur may be detectable, setting this to false disables blur entirely
     Theme = "Dark",
     MinimizeKey = Enum.KeyCode.LeftControl -- Used when theres no MinimizeKeybind
+
+    UserInfo = true,
+    UserInfoTop = false, -- display user info at the top of the window
+    UserInfoTitle = LocalPlayer.DisplayName,
+    UserInfoSubtitle = "User",
+    UserInfoSubtitleColor = Color3.fromRGB(71, 123, 255)
 })
 
 --Fluent provides Lucide Icons https://lucide.dev/icons/ for the tabs, sections and window's title, icons are optional everywhere 
@@ -18,6 +25,17 @@ local Tabs = {
     Main = Window:AddTab({ Title = "Main", Icon = "" }),
     Settings = Window:AddTab({ Title = "Settings", Icon = "settings" })
 }
+
+local Minimizer = Fluent:CreateMinimizer({
+  Icon = "home", -- you can put AssetId
+  Size = UDim2.fromOffset(44, 44),
+  Position = UDim2.new(0, 320, 0, 24),
+  Acrylic = true,
+  Corner = 10,
+  Transparency = 1,
+  Draggable = true,
+  Visible = true -- make minimizer visible on pc (DEFAULT TRUE), you can edit any setting in Minimizer variable. example: Minimizer.Visible = false
+})
 
 local Options = Fluent.Options
 
@@ -36,11 +54,14 @@ do
 
 
     Tabs.Main:AddParagraph({
+        Icon = "home",
         Title = "Paragraph",
-        Content = "This is a paragraph.\nSecond line!"
+        Content = "This is a paragraph with an icon.\nSecond line!"
     })
 
-
+    Tabs.Main:AddParagraph({
+        Content = "This is a paragraph without the title and icon!"
+    })
 
     Tabs.Main:AddButton({
         Title = "Button",
@@ -103,6 +124,7 @@ do
         Title = "Dropdown",
         Values = {"one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve", "thirteen", "fourteen"},
         Multi = false,
+        Search = true, -- optional; default true
         Default = 1,
     })
 
@@ -119,6 +141,7 @@ do
         Description = "You can select multiple values.",
         Values = {"one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve", "thirteen", "fourteen"},
         Multi = true,
+        Search = false,
         Default = {"seven", "twelve"},
     })
 
