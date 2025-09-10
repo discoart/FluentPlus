@@ -20,4 +20,4 @@ Dark, Darker, AMOLED, Light, Balloon, SoftCream, Aqua, Amethyst, Rose, Midnight,
 
 
 
-Based on [fluent 1.2.2](https://github.com/dawid-scripts/Fluent)
+Based on [fluent 1.1.0](https://github.com/dawid-scripts/Fluent)
