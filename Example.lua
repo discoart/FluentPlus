@@ -15,7 +15,7 @@ local Window = Fluent:CreateWindow({
 
     UserInfo = true,
     UserInfoTop = false, -- display user info at the top of the window
-    UserInfoTitle = Fluent.LocalPlayer.DisplayName,
+    UserInfoTitle = game:GetService("Players").LocalPlayer.DisplayName,
     UserInfoSubtitle = "User",
     UserInfoSubtitleColor = Color3.fromRGB(71, 123, 255)
 })
