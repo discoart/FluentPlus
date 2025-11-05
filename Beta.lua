@@ -8278,7 +8278,7 @@ end
 
 
 
-function Library:CreateWindow(Config)
+Library.CreateWindow = function(self, Config)
 
 
 	assert(Config.Title, "Window - Missing Title")
@@ -9764,7 +9764,6 @@ AddSignal(MobileMinimizeButton.MouseButton1Click, function()
 
 
 end)
-
 
 
 
