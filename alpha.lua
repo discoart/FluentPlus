@@ -8,7 +8,7 @@
 ╚═╝░░░░░╚══════╝░╚═════╝░╚══════╝╚═╝░░╚══╝░░░╚═╝░░░  ╚═╝░░░░░╚══════╝░╚═════╝░╚═════╝░
 
 A modified version of Fluent
-github.com/discoart/FluentPlus | dsc.gg/hydrahub
+https://fluent-pl.us
 
 ]]
 
@@ -7342,7 +7342,7 @@ local SaveManager = {} do
 
 
 
-	function SaveManager:IgnoreThemeSettings()
+	SaveManager.IgnoreThemeSettings = function(self)
 
 
 		self:SetIgnoreIndexes({ 
@@ -8375,6 +8375,9 @@ Library.CreateWindow = function(self, Config)
 
 
 		Icon = Icon,
+
+
+		Image = Config.Image,
 
 
 		SubTitle = Config.SubTitle,
