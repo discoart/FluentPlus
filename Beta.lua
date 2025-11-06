@@ -8377,6 +8377,9 @@ Library.CreateWindow = function(self, Config)
 		Icon = Icon,
 
 
+		Image = Config.Image,
+
+
 		SubTitle = Config.SubTitle,
 
 
