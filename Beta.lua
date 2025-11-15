@@ -11090,7 +11090,7 @@ end)
 
 
 
-local Window = Fluent:CreateWindow({
+--[[ local Window = Fluent:CreateWindow({
     Title = "Fluent Plus Example",
     SubTitle = "<gradient:#FF0000:#FF7F00:#FFFF00:#00FF00:#0000FF:#4B0082:#9400D3>Complete Example Interface</gradient>",
     Icon = "home", -- Small icon in window title bar (Lucide icon name or rbxassetid:// URL)
@@ -11369,7 +11369,7 @@ Fluent:Notify({
     Title = "Fluent",
     Content = "Example loaded successfully!",
     Duration = 5
-})
+}) ]]--
 
 if RunService:IsStudio() then task.wait(0.01) end
 return Library, SaveManager, InterfaceManager, Mobile
