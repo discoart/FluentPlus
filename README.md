@@ -12,7 +12,7 @@ A modified and enhanced version of [Fluent](https://github.com/dawid-scripts/Flu
 - **🐛 Bug Fixes** - Various stability and performance improvements
 - **📃 Open Source** - This version have full source code in one script
 
-## 📦 Check [Example](https://github.com/discoart/FluentPlus/blob/main/Example.lua) or [documentation (without mods)](https://forgenet.gitbook.io/fluent-documentation) to start using FluentPlus!
+## 📦 Check [Example](https://github.com/discoart/FluentPlus/blob/main/Example.lua) or [documentation](https://docs.fluent-pl.us/) to start using FluentPlus!
 
 ## 🎨 Available Themes
 
